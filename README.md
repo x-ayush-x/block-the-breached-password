@@ -210,3 +210,7 @@ Future work: trusted authentication integration, authenticated reset tokens, pas
 - Vite: https://vite.dev/guide/
 
 This is a student-built demonstration for Microsoft Innovate, not an official Microsoft or HIBP product.
+
+## Version 1.3: Security Test Lab
+
+The new **Security test lab** sidebar page runs nine local, synthetic scenarios through the shared hashing, strength, breach parser and policy engine. Test strong-but-exposed passwords and service failures, then export non-sensitive JSON evidence. This is explicitly a mock lab, not a live HIBP report or a security certification. See [upgrade guide](docs/UPGRADE-1.3.md) for the demo and installation instructions.

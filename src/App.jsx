@@ -7,6 +7,7 @@ import AccountPage from "./pages/AccountPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import HowItWorks from "./pages/HowItWorks.jsx";
 import Privacy from "./pages/Privacy.jsx";
+import SecurityLab from "./pages/SecurityLab.jsx";
 import Policy from "./pages/Policy.jsx";
 
 const readPage = () => {
@@ -51,6 +52,7 @@ export default function App() {
     architecture: <HowItWorks />,
     privacy: <Privacy audit={audit} />,
     policy: <Policy />,
+    lab: <SecurityLab />,
   };
   return (
     <div className="app-shell">

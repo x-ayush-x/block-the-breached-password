@@ -3,6 +3,7 @@ export const NAV = [
   ["signup", "Sign up", "user"],
   ["reset", "Reset password", "reset"],
   ["dashboard", "Security dashboard", "chart"],
+  ["lab", "Security test lab", "shield"],
   ["architecture", "How it works", "flow"],
   ["privacy", "Privacy & proof", "lock"],
   ["policy", "Password policy", "file"],

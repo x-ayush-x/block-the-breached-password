@@ -46,7 +46,7 @@ export default function Navbar({ page }) {
         </p>
       </div>
       <div className="sidebar-version">
-        <span className="dot" /> Hackathon prototype <span>v1.2</span>
+        <span className="dot" /> Hackathon prototype <span>v1.3</span>
       </div>
     </aside>
   );

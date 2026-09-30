@@ -22,14 +22,14 @@ export function reportSentence(summary) {
   return `${summary.percentage}% of test accounts use a breached password.`;
 }
 
-export function downloadReport(report) {
+export function downloadReport(report, filename = "breach-exposure-demo-report.json") {
   const blob = new Blob([JSON.stringify(report, null, 2)], {
     type: "application/json",
   });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "breach-exposure-demo-report.json";
+  anchor.download = filename;
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
