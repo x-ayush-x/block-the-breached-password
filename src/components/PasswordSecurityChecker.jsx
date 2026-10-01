@@ -62,8 +62,22 @@ export default function PasswordSecurityChecker({
         {breach.status === "checking" ? "Checking…" : "Check password securely"}
         <Icon name="arrow" size={17} />
       </button>
-      <BreachStatus breach={breach} />
-      <PrivacyEvidence evidence={security.evidence} />
+      {breach.status === "checking" && <button type="button" className="button secondary" onClick={security.cancel}>Cancel check</button>}
+      <section className="decision-breakdown" aria-label="Live decision breakdown">
+        <h3>Live decision breakdown</h3>
+        <ul>
+          <li>Length: {policy.lengthOK ? "Pass" : "Blocked — use 15–128 characters"}</li>
+          <li>Common/account-related values: {!password ? "Awaiting input" : policy.blocked ? "Blocked — choose a different whole value" : "Pass — local list only"}</li>
+          <li>Strength: {strength.label} — advisory; never overrides a breach match.</li>
+          <li>Breach: {breach.status}{security.offline ? " (MOCK ONLY)" : " (live HIBP)"}</li>
+        </ul>
+        <p>Processing stages · {security.offline ? "local mock transport" : "live transport"}</p>
+        <ol aria-live="polite" aria-relevant="additions">{security.stages.map((stage, i) => <li key={i}>{stage}</li>)}</ol>
+        {breach.status === "error" && <p role="status">Check failed. Submission remains blocked.</p>}
+      </section>
+      {security.offline && <p role="status"><strong>OFFLINE DEMONSTRATION — synthetic mock corpus, no HIBP requests. “Not found” below means no mock match only.</strong></p>}
+      <BreachStatus breach={breach} offline={security.offline} />
+      {!security.offline && <PrivacyEvidence evidence={security.evidence} />}
     </>
   );
 }

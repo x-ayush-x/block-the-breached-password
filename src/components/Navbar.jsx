@@ -8,9 +8,8 @@ export default function Navbar({ page }) {
           <Icon size={25} />
         </span>
         <span>
-          Block the
-          <br />
-          <strong>Breached Password</strong>
+          <strong>HELLO WORLD</strong>
+          <small>Block the Breached Password</small>
         </span>
       </a>
       <div className="workspace">
@@ -46,7 +45,7 @@ export default function Navbar({ page }) {
         </p>
       </div>
       <div className="sidebar-version">
-        <span className="dot" /> Hackathon prototype <span>v1.3</span>
+        <span className="dot" /> Hackathon prototype <span>v1.4</span>
       </div>
     </aside>
   );

@@ -1,4 +1,5 @@
 export const POLICY = Object.freeze({
+  version: "hello-world-1.4",
   minLength: 15,
   maxLength: 128,
   rawInputLimit: 4096,
@@ -8,6 +9,9 @@ export const characterCount = (value) => Array.from(value).length;
 
 // Public blocklist examples, never collected user credentials. Whole-value comparisons only.
 const COMMON = new Set([
+  "hello world",
+  "helloworld",
+  "helloworld123",
   "password",
   "password123",
   "passwordpassword",

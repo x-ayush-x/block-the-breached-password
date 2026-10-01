@@ -101,7 +101,7 @@ export async function runSecurityLab({ signal, onResult } = {}) {
 }
 
 export function labReport(results, phase) {
-  return { project: 'Block the Breached Password', version: '1.3.0', generatedAt: new Date().toISOString(),
+  return { project: 'HELLO WORLD', version: '1.4.0', generatedAt: new Date().toISOString(),
     source: 'LOCAL SYNTHETIC TESTS — NOT LIVE HIBP', phase,
     scope: 'Shared hashing, request construction, response parsing, strength and policy functions. No external requests. Not a production security certification or browser network capture.',
     totalScenarios: LAB_SCENARIOS.length, completed: results.length, passed: results.filter(row => row.passed).length,

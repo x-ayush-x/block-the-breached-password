@@ -1,3 +1,6 @@
+import ReportComparison from "../components/ReportComparison.jsx";
+import { POLICY } from "../utils/passwordPolicy.js";
+import { REPORT_SCHEMA } from "../utils/reporting.js";
 import { useEffect, useRef, useState } from "react";
 import PageHeading from "../components/PageHeading.jsx";
 import DashboardCards from "../components/DashboardCards.jsx";
@@ -10,13 +13,14 @@ import {
   downloadReport,
 } from "../utils/reporting.js";
 
-export default function Dashboard({ onAudit }) {
-  const [mode, setMode] = useState("live");
+export default function Dashboard({ onAudit, offline = false }) {
+  const [mode, setMode] = useState(offline ? "benchmark" : "live");
   const [scenario, setScenario] = useState("normal");
   const mockMode = mode === "benchmark";
   const [metrics, setMetrics] = useState(null);
+  const datasetId = useRef(null);
   const started = useRef(null);
-  const [total, setTotal] = useState(100);
+  const [total, setTotal] = useState(offline ? 1000 : 100);
   const [rows, setRows] = useState([]);
   const [phase, setPhase] = useState("idle");
   const [finishedAt, setFinishedAt] = useState(null);
@@ -49,6 +53,7 @@ export default function Dashboard({ onAudit }) {
     const controller = new AbortController();
     active.current = controller;
     const id = ++revision.current;
+    datasetId.current = mockMode ? "synthetic-benchmark-v1-1000" : crypto.randomUUID();
     setRows([]);
     setMetrics(null);
     started.current = performance.now();
@@ -94,7 +99,12 @@ export default function Dashboard({ onAudit }) {
   }
   function exportReport() {
     downloadReport({
-      project: "Block the Breached Password",
+      schema: REPORT_SCHEMA,
+      policyVersion: POLICY.version,
+      datasetId: datasetId.current,
+      coverage: `${summary.tested}/${summary.total}`,
+      recommendedActions: "Reject matches; retry unknown and pending; apply remaining policy to no-match results.",
+      project: "HELLO WORLD",
       dataset: "Demonstration test dataset — not real user credentials",
       source: mockMode ? "LOCAL MOCK CORPUS — NOT LIVE HIBP" : "Live HIBP Pwned Passwords API",
       mode,
@@ -152,10 +162,10 @@ export default function Dashboard({ onAudit }) {
           setMode(next); setTotal(next === "benchmark" ? 1000 : 100);
           setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");
         }}>
-          <option value="live">Live HIBP · 20 or 100 accounts</option>
+          <option disabled={offline} value="live">Live HIBP · 20 or 100 accounts</option>
           <option value="benchmark">Local mock benchmark · 1,000 accounts</option>
         </select>
-        {mockMode && <div className="notice warning" role="status"><strong>MOCK BENCHMARK — NO LIVE HIBP REQUESTS</strong><p>Results come from a fixed synthetic corpus. They do not measure real-world breach exposure or HIBP speed. Signup and reset still use live HIBP.</p></div>}
+        {mockMode && <div className="notice warning" role="status"><strong>MOCK BENCHMARK — NO LIVE HIBP REQUESTS</strong><p>Results come from a fixed synthetic corpus. They do not measure real-world breach exposure or HIBP speed. Signup and reset follow the explicitly selected demonstration mode above.</p></div>}
         {mockMode && <div className="field"><label htmlFor="benchmark-scenario">Benchmark scenario</label><select id="benchmark-scenario" value={scenario} disabled={running} onChange={(event) => {setScenario(event.target.value); setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");}}><option value="normal">Normal · complete 1,000 checks</option><option value="outage">Service outage · demonstrate safe failure</option></select></div>}
       </section>
       <DashboardCards mockMode={mockMode} summary={summary} hasRun={phase !== "idle"} />
@@ -429,6 +439,21 @@ export default function Dashboard({ onAudit }) {
           </div>
         )}
       </section>
+      <section className="panel printable-report" aria-label="Printable security report">
+        <h2>HELLO WORLD · Security report</h2>
+        <p><strong>{mockMode ? "MOCK — LOCAL SYNTHETIC CORPUS" : "LIVE HIBP Pwned Passwords API"}</strong></p>
+        <p>Policy: {POLICY.version} · Dataset: {datasetId.current ?? "Not run"} · Scenario: {mockMode ? scenario : "live"}</p>
+        <p>Timestamp: {finishedAt ?? "Not finished"} · Run status: {phase}</p>
+        <p>Coverage: {summary.tested}/{summary.total} successfully checked · {summary.unknown} unknown · {summary.pending} pending.</p>
+        <p>Report finding: {mockMode ? "Synthetic mock results: " : ""}{reportSentence(summary)}</p>
+        <p>Matches: {summary.breached} · No match: {summary.clear}. Denominator: successful checks only.</p>
+        <h3>Recommended actions</h3>
+        <p>Reject matched passwords. Retry unknown and pending checks; keep submission blocked. For no-match results, apply length and common/account-related rules. Strength is advisory. No match does not guarantee safety.</p>
+        <p>Demonstration accounts only. Authentication is simulated. Passwords and hashes are excluded. {mockMode && "Mock findings do not measure real breach exposure."}</p>
+        <button className="button secondary no-print" disabled={!finishedAt || running} onClick={() => window.print()}>Print / Save as PDF</button>
+        <p className="no-print">In the print dialog, choose Save as PDF. The report includes all aggregate results, regardless of table filters or pagination.</p>
+      </section>
+      <ReportComparison />
     </>
   );
 }
