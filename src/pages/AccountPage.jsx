@@ -12,8 +12,8 @@ import {
 } from "../utils/passwordPolicy.js";
 import { BREACHED_DEMO, generateDemoPassword } from "../data/demoAccounts.js";
 
-export default function AccountPage({ reset = false, onAudit }) {
-  const security = usePasswordSecurity(onAudit);
+export default function AccountPage({ reset = false, onAudit, offline = false }) {
+  const security = usePasswordSecurity(onAudit, offline);
   const [email, setEmail] = useState("");
   const [confirm, setConfirm] = useState("");
   const [success, setSuccess] = useState(false);
@@ -76,7 +76,7 @@ export default function AccountPage({ reset = false, onAudit }) {
         }
       >
         <span className="pill">
-          <span className="dot" /> Live HIBP lookup
+          <span className="dot" /> {offline ? "OFFLINE · MOCK results only" : "Live HIBP lookup"}
         </span>
       </PageHeading>
       <div className="account-grid">
@@ -113,9 +113,10 @@ export default function AccountPage({ reset = false, onAudit }) {
             </div>
           ) : (
             <form onSubmit={submit}>
-              {!reset && (
+              {(
+
                 <div className="field">
-                  <label htmlFor="email">Email address</label>
+                  <label htmlFor="email">Email address{reset ? " (optional account context)" : ""}</label>
                   <input
                     id="email"
                     type="email"
@@ -124,7 +125,7 @@ export default function AccountPage({ reset = false, onAudit }) {
                     maxLength={254}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="judge@example.test"
-                    required
+                    required={!reset}
                   />
                   <small>
                     Used locally for context-aware password feedback. Never sent
@@ -159,9 +160,9 @@ export default function AccountPage({ reset = false, onAudit }) {
                   </p>
                 </>
               )}
-              <div className="decision-note">
+              <div className="decision-note" role="status">
                 <Icon name={decision.allowed ? "check" : "info"} size={16} />
-                <p>{decision.reason}</p>
+                <p>{decision.reason}{!ready && decision.allowed && (reset ? " Confirm the same password to continue." : " Enter a valid email address to continue.")}</p>
               </div>
               <button
                 type="submit"
@@ -215,7 +216,7 @@ export default function AccountPage({ reset = false, onAudit }) {
             </button>
             <small>
               Generated values are not guaranteed to be absent from breach data.
-              The live check decides.
+              The selected live or mock check decides; mock results prove no real-world safety.
             </small>
           </section>
           <section className="aside-explainer">

@@ -1,20 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar.jsx";
 import { NAV } from "./data/navigation.js";
 import Icon from "./components/Icon.jsx";
-import Home from "./pages/Home.jsx";
-import AccountPage from "./pages/AccountPage.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import HowItWorks from "./pages/HowItWorks.jsx";
-import Privacy from "./pages/Privacy.jsx";
-import SecurityLab from "./pages/SecurityLab.jsx";
-import Policy from "./pages/Policy.jsx";
+const Home = lazy(() => import("./pages/Home.jsx"));
+const AccountPage = lazy(() => import("./pages/AccountPage.jsx"));
+const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks.jsx"));
+const Privacy = lazy(() => import("./pages/Privacy.jsx"));
+const SecurityLab = lazy(() => import("./pages/SecurityLab.jsx"));
+const Policy = lazy(() => import("./pages/Policy.jsx"));
+
+import DemoGuide from "./components/DemoGuide.jsx";
 
 const readPage = () => {
   const id = window.location.hash.slice(1);
   return NAV.some(([page]) => page === id) ? id : "home";
 };
 export default function App() {
+  const [offline, setOffline] = useState(false);
   const [page, setPage] = useState(readPage);
   const [audit, setAudit] = useState([]);
   const main = useRef(null);
@@ -28,7 +31,7 @@ export default function App() {
     return () => window.removeEventListener("hashchange", navigate);
   }, []);
   useEffect(() => {
-    document.title = `${NAV.find(([id]) => id === page)[1]} · Block the Breached Password`;
+    document.title = `${NAV.find(([id]) => id === page)[1]} · HELLO WORLD`;
   }, [page]);
   function onAudit(action, outcome) {
     // Only fixed event labels are passed by the UI. Never include form contents.
@@ -46,9 +49,9 @@ export default function App() {
   }
   const pages = {
     home: <Home />,
-    signup: <AccountPage key="signup" onAudit={onAudit} />,
-    reset: <AccountPage key="reset" reset onAudit={onAudit} />,
-    dashboard: <Dashboard onAudit={onAudit} />,
+    signup: <AccountPage offline={offline} key={`signup-${offline}`} onAudit={onAudit} />,
+    reset: <AccountPage offline={offline} key={`reset-${offline}`} reset onAudit={onAudit} />,
+    dashboard: <Dashboard offline={offline} key={`dashboard-${offline}`} onAudit={onAudit} />,
     architecture: <HowItWorks />,
     privacy: <Privacy audit={audit} />,
     policy: <Policy />,
@@ -82,12 +85,13 @@ export default function App() {
           </div>
         </header>
         <main id="main-content" ref={main} tabIndex={-1}>
-          {pages[page]}
+          <DemoGuide offline={offline} setOffline={setOffline} />
+          <Suspense key={page} fallback={<p role="status">Loading page…</p>}>{pages[page]}</Suspense>
         </main>
         <footer className="site-footer">
           <span>
             <Icon name="shield" size={14} />
-            Block the Breached Password
+            HELLO WORLD
           </span>
           <span>Client-side prototype · Authentication simulated</span>
           <a href="#privacy">Privacy & limitations</a>

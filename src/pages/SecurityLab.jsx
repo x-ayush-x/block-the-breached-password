@@ -31,10 +31,10 @@ export default function SecurityLab() {
     }
   }
   return <>
-    <PageHeading eyebrow="SECURITY TEST LAB · V1.3" title="Show the decision. Test the failure." description="Nine controlled scenarios exercise the same security engine used by signup and reset.">
+    <PageHeading eyebrow="SECURITY TEST LAB · V1.4" title="Show the decision. Test the failure." description="Nine controlled scenarios exercise the same security engine used by signup and reset.">
       <button className="button secondary" disabled={!results.length || running} onClick={() => downloadReport(labReport(results, phase), 'security-lab-evidence.json')}><Icon name="download" size={17} /> Export evidence</button>
     </PageHeading>
-    <div className="dataset-banner"><Icon name="info" size={20} /><p><strong>Local simulations. No live HIBP requests.</strong> Public synthetic fixtures and mock responses make this demo reproducible. Signup and reset continue to use live HIBP.</p></div>
+    <div className="dataset-banner"><Icon name="info" size={20} /><p><strong>Local simulations. No live HIBP requests.</strong> Public synthetic fixtures and mock responses make this demo reproducible. Signup and reset follow the explicitly selected demonstration mode above.</p></div>
     <section className="panel lab-control" aria-label="Lab controls">
       <div><span className="eyebrow">VERIFY BEHAVIOR</span><h2>Does the gate make the right call?</h2><p className="muted">A passing test can mean the password was correctly rejected. It does not mean a password is safe.</p></div>
       <div className="lab-actions">{running ? <button className="button secondary" onClick={() => active.current?.abort()}>Cancel tests</button> : <button className="button primary" onClick={run}><Icon name="bolt" size={18} />{phase === 'idle' ? 'Run security tests' : 'Run tests again'}</button>}</div>

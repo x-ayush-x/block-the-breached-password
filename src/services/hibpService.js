@@ -102,6 +102,7 @@ export async function checkBreachedPassword(
   options.signal?.throwIfAborted();
   let hash;
   try {
+    options.onStage?.("Hashing locally with SHA-1");
     hash = await sha1(canonical);
   } catch {
     throw new BreachCheckError("CRYPTO");
@@ -113,11 +114,15 @@ export async function checkBreachedPassword(
   let entries = rangeCache?.get(prefix);
   if (entries) options.onLookup?.({ status: "reused", prefix });
   if (!entries) {
+    options.onStage?.("Looking up five-character prefix");
     entries = await fetchRange(prefix, options);
     rangeCache?.set(prefix, entries);
   }
   options.signal?.throwIfAborted();
-  return matchSuffix(entries, suffix);
+  options.onStage?.("Valid response parsed; comparing suffix locally");
+  const result = matchSuffix(entries, suffix);
+  options.onStage?.("Decision complete");
+  return result;
 }
 
 export const errorMessage = (code) =>

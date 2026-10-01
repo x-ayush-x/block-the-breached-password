@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { checkBreachedPassword } from "../services/hibpService.js";
 import { securityDecision, validatePassword } from "../utils/passwordPolicy.js";
 
+import { createMockRange } from "../services/benchmark.js";
+
 const unchecked = () => ({ status: "idle", count: 0 });
-export default function usePasswordSecurity(onAudit) {
+export default function usePasswordSecurity(onAudit, offline = false) {
+  const [stages, setStages] = useState([]);
   const [evidence, setEvidence] = useState(null);
   const [cooldown, setCooldown] = useState(false);
   const cooldownTimer = useRef(null);
@@ -29,6 +32,7 @@ export default function usePasswordSecurity(onAudit) {
     setPassword(value);
     publish(unchecked());
     setEvidence(null);
+    setStages([]);
   }
   useEffect(
     () => () => {
@@ -58,16 +62,20 @@ export default function usePasswordSecurity(onAudit) {
     clearTimeout(expiry.current);
     publish({ status: "checking", count: 0 });
     setEvidence(null);
+    setStages([]);
     try {
+      const fetchImpl = offline ? await createMockRange({ signal: controller.signal }) : undefined;
       const checked = await checkBreachedPassword(current.current, {
         signal: controller.signal,
+        fetchImpl,
+        onStage: (stage) => { if (id === revision.current) setStages((items) => [...items, stage]); },
         onLookup: (event) => {
-          if (id === revision.current) setEvidence(event);
+          if (id === revision.current && !offline) setEvidence(event);
         },
       });
       if (id !== revision.current) return;
       onAudit?.(
-        "Breach check",
+        offline ? "Mock breach check" : "Breach check",
         checked.breached ? "Compromised" : "No known match",
       );
       publish({
@@ -83,7 +91,7 @@ export default function usePasswordSecurity(onAudit) {
       );
     } catch (error) {
       if (id !== revision.current || error.name === "AbortError") return;
-      onAudit?.("Breach check", "Unavailable");
+      onAudit?.(offline ? "Mock breach check" : "Breach check", "Unavailable");
       publish({ status: "error", count: 0, code: error.code });
     } finally {
       if (id === revision.current) active.current = null;
@@ -96,5 +104,10 @@ export default function usePasswordSecurity(onAudit) {
       result.current,
     );
   }
-  return { password, breach, evidence, cooldown, changePassword, check, decisionNow };
+  function cancel() {
+    revision.current++; active.current?.abort(); active.current = null;
+    clearTimeout(expiry.current); publish({ status: "idle", count: 0 });
+    setEvidence(null); setStages((items) => [...items, "Cancelled — submission blocked"]);
+  }
+  return { offline, stages, cancel, password, breach, evidence, cooldown, changePassword, check, decisionNow };
 }

@@ -1,6 +1,6 @@
 import Icon from "./Icon.jsx";
 import { errorMessage } from "../services/hibpService.js";
-export default function BreachStatus({ breach }) {
+export default function BreachStatus({ breach, offline = false }) {
   const states = {
     idle: [
       "Not checked",
@@ -29,6 +29,11 @@ export default function BreachStatus({ breach }) {
       "reset",
     ],
   };
+  if (offline) {
+    states.checking = ['Checking local mock corpus…', 'No HIBP request. Synthetic demonstration only.', 'reset'];
+    states.breached = ['Mock corpus match', 'This public fixture matches the synthetic corpus. Simulated submission is blocked.', 'close'];
+    states.clear = ['No mock match', 'This is not a live breach verdict and does not establish real-world safety.', 'check'];
+  }
   const [title, text, icon] = states[breach.status];
   return (
     <div
@@ -46,8 +51,7 @@ export default function BreachStatus({ breach }) {
         <p>{text}</p>
         {breach.status === "breached" && (
           <small>
-            Observed approximately {breach.count.toLocaleString()} times in HIBP
-            data.
+            Observed approximately {breach.count.toLocaleString()} times in {offline ? "synthetic mock data" : "HIBP data"}.
           </small>
         )}
       </div>

@@ -1,8 +1,10 @@
+> **HELLO WORLD v1.4** — team and project name updated. Start with [macOS installation and update instructions](docs/UPGRADE-1.4-MACOS.md). GitHub repository and Pages path remain `block-the-breached-password`.
+
 > Version 1.2 adds a clearly labelled local 1,000-account benchmark and outage scenario. See [benchmark instructions](docs/BENCHMARK-1.2.md).
 
 > Version 1.1 adds live prefix evidence and measured dashboard performance. See [upgrade instructions](docs/UPGRADE-1.1.md).
 
-# Block the Breached Password
+# HELLO WORLD
 
 **Stop compromised passwords before they become your next security incident.**
 
@@ -16,7 +18,7 @@ You do not need to copy source files manually or run create-vite.
 
 1. Stop your old Phase 1 server with **Control+C** in its VS Code terminal.
 2. Extract this ZIP into a **new folder**. Keep the Phase 1 folder as your backup.
-3. In VS Code choose **File → Open Folder** and select the new `block-the-breached-password-complete` folder containing this README and `package.json`.
+3. In VS Code choose **File → Open Folder** and select the new `hello-world-complete` folder containing this README and `package.json`.
 4. Open **Terminal → New Terminal** and run these commands one at a time:
 
 ```bash
