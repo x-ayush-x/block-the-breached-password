@@ -10,6 +10,7 @@ const Privacy = lazy(() => import("./pages/Privacy.jsx"));
 const SecurityLab = lazy(() => import("./pages/SecurityLab.jsx"));
 const Policy = lazy(() => import("./pages/Policy.jsx"));
 
+import ThemeControl from "./components/ThemeControl.jsx";
 import DemoGuide from "./components/DemoGuide.jsx";
 
 const readPage = () => {
@@ -78,9 +79,10 @@ export default function App() {
             <strong>{NAV.find(([id]) => id === page)[1]}</strong>
           </div>
           <div className="topbar-right">
+            <ThemeControl />
             <span className="environment-pill">DEMO ENVIRONMENT</span>
             <span className="avatar" aria-label="Demo workspace">
-              MI
+              HW
             </span>
           </div>
         </header>

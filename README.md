@@ -1,4 +1,4 @@
-> **HELLO WORLD v1.4** — team and project name updated. Start with [macOS installation and update instructions](docs/UPGRADE-1.4-MACOS.md). GitHub repository and Pages path remain `block-the-breached-password`.
+> **HELLO WORLD v1.5** — refreshed light/dark/system themes, clearer synthetic datasets, a teachable Test Lab and stronger freshness checks. Start with [v1.5 macOS update instructions](docs/UPGRADE-1.5-MACOS.md). The repository and Pages path remain `block-the-breached-password`.
 
 > Version 1.2 adds a clearly labelled local 1,000-account benchmark and outage scenario. See [benchmark instructions](docs/BENCHMARK-1.2.md).
 
@@ -38,18 +38,22 @@ Our browser sends a five-character hash prefix, retrieves a group of candidate s
 
 ## Features
 
-- Overview, signup, reset, dashboard, architecture, privacy and policy screens.
+- Overview, signup, reset, dashboard, Security Test Lab, architecture, privacy and policy screens.
 - Reusable password component and security hook for both account flows.
 - Local zxcvbn guessability estimate, show/hide, paste and password-manager support.
 - Explicit HIBP checks; no request on every keystroke.
 - AbortController cancellation plus revision tracking to ignore stale responses.
-- Twelve-second request timeout; five-minute result expiration.
+- Twelve-second request timeout; five-minute expiry timer plus independent submit-time timestamp validation.
 - Strict response parsing; zero-count padding never matches.
 - Policy validation at submission, in addition to disabled buttons.
 - Live analysis of 20 or 100 test accounts, progress, cancel, filtering and pagination.
 - Exportable JSON report containing only test IDs, decisions, timestamps and aggregates.
 - In-memory, capped session activity; no claim of a durable or tamper-proof audit trail.
-- Responsive navy/white interface, labelled controls, keyboard focus and reduced-motion support.
+- Responsive light, dark and system themes, labelled controls, keyboard focus and reduced-motion support. Appearance stays in memory for the current page session; no browser storage is used.
+- Explicit dataset composition: generated test accounts are not employee accounts.
+- Run all nine Lab scenarios or one at a time, with expected/observed decisions and honest evidence scope.
+- Printable reports, compatible JSON report comparison, guided walkthrough and explicit offline demonstration mode.
+- GitHub Pages workflow runs lint, unit tests and browser tests before the repository-path build.
 
 ## First demonstration
 
@@ -145,9 +149,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-All automated HIBP responses are mocked, including the 23% fixture report. The app itself has no fake-success or offline approval mode. Browser traces/videos/screenshots are disabled by default in the tests. Test credentials are public fixtures only.
+All automated HIBP responses are mocked, including the 23% fixture report. Live failures never become approval and never automatically fall back to mock. The explicit offline mode allows only labelled mock simulations, not real authentication. Browser traces/videos/screenshots are disabled by default in the tests. Test credentials are public fixtures only.
 
-The zxcvbn dictionary makes the JavaScript bundle comparatively large; Vite can display a bundle-size advisory. This does not mean the build failed. A future optimization is lazy-loading the strength engine or using a worker.
+The zxcvbn dictionary makes the JavaScript bundle comparatively large; Vite can display a bundle-size advisory. This does not mean the build failed. Page modules and the strength dependency are already deferred from the landing page. Moving strength evaluation to a worker is future work.
 
 ## Troubleshooting
 
@@ -216,3 +220,7 @@ This is a student-built demonstration for Microsoft Innovate, not an official Mi
 ## Version 1.3: Security Test Lab
 
 The new **Security test lab** sidebar page runs nine local, synthetic scenarios through the shared hashing, strength, breach parser and policy engine. Test strong-but-exposed passwords and service failures, then export non-sensitive JSON evidence. This is explicitly a mock lab, not a live HIBP report or a security certification. See [upgrade guide](docs/UPGRADE-1.3.md) for the demo and installation instructions.
+
+## Version 1.5
+
+See [upgrade instructions](docs/UPGRADE-1.5-MACOS.md) and [validation](docs/VALIDATION-1.5.md). The existing detailed v1.4 learning guide is historical: v1.5 adds timestamp-based submission freshness, appearance controls, single-case Lab runs and dataset explanations. Authentication remains simulated. No employee-password collection or upload has been added.

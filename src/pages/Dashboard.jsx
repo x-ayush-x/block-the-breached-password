@@ -1,3 +1,4 @@
+import { demoComposition } from "../data/demoAccounts.js";
 import ReportComparison from "../components/ReportComparison.jsx";
 import { POLICY } from "../utils/passwordPolicy.js";
 import { REPORT_SCHEMA } from "../utils/reporting.js";
@@ -41,6 +42,7 @@ export default function Dashboard({ onAudit, offline = false }) {
     const timer = setInterval(() => setMetrics((previous) => previous && ({ ...previous, elapsedMs: Math.round(performance.now() - started.current) })), 250);
     return () => clearInterval(timer);
   }, [running]);
+  const composition = mockMode ? { common: 230, random: 770 } : demoComposition(total);
   const summary = summarize(rows, total);
   const visible = rows.filter(
     (row) => filter === "all" || row.status === filter,
@@ -106,6 +108,7 @@ export default function Dashboard({ onAudit, offline = false }) {
       recommendedActions: "Reject matches; retry unknown and pending; apply remaining policy to no-match results.",
       project: "HELLO WORLD",
       dataset: "Demonstration test dataset — not real user credentials",
+      composition: { commonExamples: composition.common, otherSyntheticInputs: composition.random },
       source: mockMode ? "LOCAL MOCK CORPUS — NOT LIVE HIBP" : "Live HIBP Pwned Passwords API",
       mode,
       scenario: mockMode ? scenario : null,
@@ -134,8 +137,8 @@ export default function Dashboard({ onAudit, offline = false }) {
     <>
       <PageHeading
         eyebrow="SECURITY OPERATIONS · DEMONSTRATION"
-        title="Understand your exposure."
-        description="Measure breached-password use across a temporary set of test accounts."
+        title="Real checks. Demonstration data."
+        description="Explore breach screening without collecting anyone’s credentials."
       >
         <button
           className="button secondary"
@@ -167,6 +170,17 @@ export default function Dashboard({ onAudit, offline = false }) {
         </select>
         {mockMode && <div className="notice warning" role="status"><strong>MOCK BENCHMARK — NO LIVE HIBP REQUESTS</strong><p>Results come from a fixed synthetic corpus. They do not measure real-world breach exposure or HIBP speed. Signup and reset follow the explicitly selected demonstration mode above.</p></div>}
         {mockMode && <div className="field"><label htmlFor="benchmark-scenario">Benchmark scenario</label><select id="benchmark-scenario" value={scenario} disabled={running} onChange={(event) => {setScenario(event.target.value); setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");}}><option value="normal">Normal · complete 1,000 checks</option><option value="outage">Service outage · demonstrate safe failure</option></select></div>}
+      </section>
+      <section className="panel dataset-composition" aria-label="Dataset composition">
+        <div className="spread"><span className="eyebrow">WHAT ARE WE CHECKING?</span><span className="source-badge">{mockMode ? "LOCAL MOCK RESPONSES" : "LIVE HIBP RESPONSES"}</span></div>
+        <h2>Synthetic accounts. No employee passwords.</h2>
+        <p>These test IDs are generated for this demonstration. They are not employees, registered users or records collected from signup.</p>
+        <div className="composition-grid">
+          <div><strong>{composition.common}</strong><span>inputs repeating five public common-password examples</span></div>
+          <div><strong>{composition.random}</strong><span>{mockMode ? "fixed synthetic inputs absent from the mock corpus" : "freshly generated random inputs"}</span></div>
+        </div>
+        <p className="fine-print">{mockMode ? "The normal mock run is designed to yield 230 matches out of 1,000. This is a local test corpus, not evidence of real exposure." : `With all checks successful, if only the common examples match, this dataset yields ${Math.round(composition.common / total * 100)}%. HIBP determines each result; the input mix explains why runs often have the same percentage.`}</p>
+        <p className="privacy-boundary"><Icon name="lock" size={16} /> No credential upload. No employee directory. A password match does not prove a person’s account was breached.</p>
       </section>
       <DashboardCards mockMode={mockMode} summary={summary} hasRun={phase !== "idle"} />
       <section className="panel performance-panel" aria-label="Run performance">
@@ -301,7 +315,7 @@ export default function Dashboard({ onAudit, offline = false }) {
                 cy="90"
                 r="70"
                 fill="none"
-                stroke="#edf0f5"
+                stroke="var(--line)"
                 strokeWidth="17"
               />
               {[
@@ -443,6 +457,7 @@ export default function Dashboard({ onAudit, offline = false }) {
         <h2>HELLO WORLD · Security report</h2>
         <p><strong>{mockMode ? "MOCK — LOCAL SYNTHETIC CORPUS" : "LIVE HIBP Pwned Passwords API"}</strong></p>
         <p>Policy: {POLICY.version} · Dataset: {datasetId.current ?? "Not run"} · Scenario: {mockMode ? scenario : "live"}</p>
+        <p>Synthetic inputs: {composition.common} repeated common examples + {composition.random} {mockMode ? "other fixed synthetic values" : "fresh random values"}. No employee accounts.</p>
         <p>Timestamp: {finishedAt ?? "Not finished"} · Run status: {phase}</p>
         <p>Coverage: {summary.tested}/{summary.total} successfully checked · {summary.unknown} unknown · {summary.pending} pending.</p>
         <p>Report finding: {mockMode ? "Synthetic mock results: " : ""}{reportSentence(summary)}</p>

@@ -1,0 +1,36 @@
+HELLO WORLD v1.5 update-only manifest
+Apply to v1.4. No deletions are required. Preserve .git and review local changes before copying.
+
+.github/workflows/deploy.yml
+.gitignore
+README.md
+docs/UPGRADE-1.5-MACOS.md
+docs/VALIDATION-1.5.md
+docs/screenshots/v1.5/README.md
+docs/screenshots/v1.5/dark-dashboard.png
+docs/screenshots/v1.5/dark-home.png
+docs/screenshots/v1.5/dark-lab.png
+docs/screenshots/v1.5/light-home.png
+e2e/upgrade15.spec.js
+package-lock.json
+package.json
+src/App.jsx
+src/components/Navbar.jsx
+src/components/PrivacyEvidence.jsx
+src/components/ReportComparison.jsx
+src/components/ThemeControl.jsx
+src/data/demoAccounts.js
+src/hooks/usePasswordSecurity.js
+src/index.css
+src/main.jsx
+src/pages/Dashboard.jsx
+src/pages/SecurityLab.css
+src/pages/SecurityLab.jsx
+src/services/securityLab.js
+src/styles.css
+src/tests/upgrade15.test.js
+src/theme.css
+src/utils/passwordPolicy.js
+src/utils/reporting.js
+src/utils/resultFreshness.js
+docs/UPDATE-MANIFEST-1.5.txt

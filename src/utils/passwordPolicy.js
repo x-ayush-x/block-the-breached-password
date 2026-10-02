@@ -1,5 +1,5 @@
 export const POLICY = Object.freeze({
-  version: "hello-world-1.4",
+  version: "hello-world-1.5",
   minLength: 15,
   maxLength: 128,
   rawInputLimit: 4096,

@@ -13,7 +13,7 @@ export default function Navbar({ page }) {
         </span>
       </a>
       <div className="workspace">
-        <span className="workspace-avatar">MI</span>
+        <span className="workspace-avatar">HW</span>
         <span>
           Microsoft Innovate<small>Student project · Demo workspace</small>
         </span>
@@ -45,7 +45,7 @@ export default function Navbar({ page }) {
         </p>
       </div>
       <div className="sidebar-version">
-        <span className="dot" /> Hackathon prototype <span>v1.4</span>
+        <span className="dot" /> Hackathon prototype <span>v1.5</span>
       </div>
     </aside>
   );
