@@ -72,7 +72,14 @@ test('all routes fit small phones, tablets and desktop in both themes', async ({
       for (const route of ['home', 'signup', 'reset', 'dashboard', 'lab', 'architecture', 'privacy', 'policy']) {
         await page.evaluate(route => { location.hash = route; }, route);
         await expect(page.locator('h1')).toBeVisible();
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width} ${theme} ${route}`).toBe(true);
+        const layout = await page.evaluate(() => ({
+          viewport: innerWidth,
+          width: document.documentElement.scrollWidth,
+          overflowing: [...document.querySelectorAll('body *')]
+            .filter(el => el.getBoundingClientRect().right > innerWidth || el.scrollWidth > el.clientWidth + 1)
+            .map(el => ({ tag: el.tagName, className: el.className, right: el.getBoundingClientRect().right, width: el.clientWidth, scrollWidth: el.scrollWidth })),
+        }));
+        expect(layout.width, `${width} ${theme} ${route}: ${JSON.stringify(layout)}`).toBeLessThanOrEqual(layout.viewport);
         if (process.env.HELLO_WORLD_V16_VISUAL_QA && [390, 1440].includes(width)) {
           await page.screenshot({ path: `/tmp/hello-v16-${width}-${theme}-${route}.png`, fullPage: true });
         }
@@ -80,4 +87,15 @@ test('all routes fit small phones, tablets and desktop in both themes', async ({
     }
   }
   expect(errors).toEqual([]);
+});
+
+// Exercise larger mask glyphs so font-dependent overflow is reproducible on macOS too.
+test('illustrative mask stays inside its card with wide fallback glyphs', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  const mask = page.locator('.flow-secret > span');
+  await mask.evaluate(el => { el.style.fontFamily = 'monospace'; el.style.fontSize = '26px'; });
+  expect(await mask.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

@@ -38,6 +38,8 @@ p { text-wrap: pretty; }
 .section-block { margin-top: 36px; }
 main > .two-grid + .panel { margin-top: 24px; }
 .security-flow.compact { transform: none; }
+/* Mask glyph widths differ across system fonts; allow the illustrative text to wrap. */
+.flow-secret > span { overflow-wrap: anywhere; }
 .flow-remote { flex-wrap: wrap; }
 .flow-remote > div { flex: 1; min-width: 0; }
 .flow-remote small { line-height: 1.6; }
