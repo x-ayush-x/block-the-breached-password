@@ -76,8 +76,8 @@ test('all routes fit small phones, tablets and desktop in both themes', async ({
           viewport: innerWidth,
           width: document.documentElement.scrollWidth,
           overflowing: [...document.querySelectorAll('body *')]
-            .filter(el => el.getBoundingClientRect().right > innerWidth)
-            .map(el => ({ tag: el.tagName, className: el.className, right: el.getBoundingClientRect().right })),
+            .filter(el => el.getBoundingClientRect().right > innerWidth || el.scrollWidth > el.clientWidth + 1)
+            .map(el => ({ tag: el.tagName, className: el.className, right: el.getBoundingClientRect().right, width: el.clientWidth, scrollWidth: el.scrollWidth })),
         }));
         expect(layout.width, `${width} ${theme} ${route}: ${JSON.stringify(layout)}`).toBeLessThanOrEqual(layout.viewport);
         if (process.env.HELLO_WORLD_V16_VISUAL_QA && [390, 1440].includes(width)) {
@@ -87,4 +87,15 @@ test('all routes fit small phones, tablets and desktop in both themes', async ({
     }
   }
   expect(errors).toEqual([]);
+});
+
+// Exercise larger mask glyphs so font-dependent overflow is reproducible on macOS too.
+test('illustrative mask stays inside its card with wide fallback glyphs', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/');
+  await expect(page.locator('h1')).toBeVisible();
+  await page.addStyleTag({ content: '.flow-secret > span { font-family: monospace; font-size: 26px; }' });
+  const mask = page.locator('.flow-secret > span');
+  expect(await mask.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
