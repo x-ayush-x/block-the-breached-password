@@ -2,11 +2,11 @@
 
 /* v1.4: keyboard access, report layout and reduced motion */
 :focus-visible { outline: 3px solid #245cc9; outline-offset: 4px; }
-.demo-guide { padding: 16px; margin-bottom: 24px; border: 1px solid #b7c8e5; border-radius: 12px; background: #f4f7ff; }
+.demo-guide { padding: 16px; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
 .demo-guide label { font-weight: 700; }
 .demo-guide p, .decision-breakdown li { margin: 10px 0; }
 .demo-guide summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
-.decision-breakdown { padding: 16px; margin: 16px 0; background: #f5f7fa; border-radius: 10px; }
+.decision-breakdown { padding: 16px; margin: 16px 0; background: var(--surface-soft); border-radius: 10px; }
 .printable-report, .report-comparison { padding: 24px; margin-bottom: 24px; }
 .printable-report p, .report-comparison p { margin: 12px 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

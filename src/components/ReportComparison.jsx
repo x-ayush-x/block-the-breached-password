@@ -15,7 +15,7 @@ export default function ReportComparison() {
       if (revision !== revisions.current[index]) return;
       setReports(old => old.map((r, i) => i === index ? report : r));
       setErrors(old => old.map((r, i) => i === index ? '' : r));
-    } catch { if (revision !== revisions.current[index]) return; setErrors(old => old.map((r, i) => i === index ? 'Invalid or unsupported report. Choose a v1.4 JSON export (maximum 1 MB).' : r)); }
+    } catch { if (revision !== revisions.current[index]) return; setErrors(old => old.map((r, i) => i === index ? 'Invalid or unsupported report. Choose a v1.4 or newer JSON export (maximum 1 MB).' : r)); }
   }
   return <section className="panel report-comparison no-print"><h2>Compare exported reports</h2><p>Files stay in your browser. Matching dataset, source, policy, scenario and full coverage are required. Live runs use fresh datasets, so separate live runs cannot be compared.</p>
     {[0,1].map(i => <div className="field" key={i}><label htmlFor={`report-${i}`}>Report {i + 1}</label><input id={`report-${i}`} type="file" accept=".json,application/json" onChange={e => read(e.target.files?.[0], i)} /><p role="status">{errors[i] || (reports[i] && `${reports[i].mode === 'benchmark' ? 'MOCK' : 'LIVE'} · ${reports[i].finishedAt} · coverage ${reports[i].summary.tested}/${reports[i].summary.total}`)}</p></div>)}

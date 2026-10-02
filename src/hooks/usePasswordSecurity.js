@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { checkBreachedPassword } from "../services/hibpService.js";
 import { securityDecision, validatePassword } from "../utils/passwordPolicy.js";
 
+import { freshResult, RESULT_TTL_MS } from "../utils/resultFreshness.js";
 import { createMockRange } from "../services/benchmark.js";
 
 const unchecked = () => ({ status: "idle", count: 0 });
@@ -87,7 +88,7 @@ export default function usePasswordSecurity(onAudit, offline = false) {
         () => {
           if (id === revision.current) publish({ status: "expired", count: 0 });
         },
-        5 * 60 * 1000,
+        RESULT_TTL_MS,
       );
     } catch (error) {
       if (id !== revision.current || error.name === "AbortError") return;
@@ -99,9 +100,11 @@ export default function usePasswordSecurity(onAudit, offline = false) {
   }
   // The submit handler reads the current refs, so it cannot trust stale UI state.
   function decisionNow(email) {
+    const fresh = freshResult(result.current);
+    if (fresh !== result.current) publish(fresh);
     return securityDecision(
       validatePassword(current.current, email),
-      result.current,
+      fresh,
     );
   }
   function cancel() {

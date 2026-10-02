@@ -6,3 +6,8 @@ dist/
 *.local
 playwright-report/
 test-results/
+
+# Local generated deliverables and document rendering work
+output/
+tmp/
+deliverables/

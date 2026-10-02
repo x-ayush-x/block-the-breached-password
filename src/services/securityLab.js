@@ -100,11 +100,12 @@ export async function runSecurityLab({ signal, onResult } = {}) {
   return results;
 }
 
-export function labReport(results, phase) {
-  return { project: 'HELLO WORLD', version: '1.4.0', generatedAt: new Date().toISOString(),
+export function labReport(results, phase, selected = null) {
+  const scenarioIds = selected && LAB_SCENARIOS.some(item => item.id === selected) ? [selected] : LAB_SCENARIOS.map(item => item.id);
+  return { project: 'HELLO WORLD', version: '1.5.0', generatedAt: new Date().toISOString(),
     source: 'LOCAL SYNTHETIC TESTS — NOT LIVE HIBP', phase,
     scope: 'Shared hashing, request construction, response parsing, strength and policy functions. No external requests. Not a production security certification or browser network capture.',
-    totalScenarios: LAB_SCENARIOS.length, completed: results.length, passed: results.filter(row => row.passed).length,
+    totalScenarios: scenarioIds.length, scenarioIds, completed: results.length, passed: results.filter(row => row.passed).length,
     results: results.map(row => ({ id: row.id, passed: row.passed, allowed: row.allowed, breachStatus: row.breachStatus,
       policyPassed: row.policyPassed, strength: row.strength, errorCode: row.errorCode,
       requestContractPassed: row.requestContractPassed, mockRequests: row.mockRequests, durationMs: row.durationMs })) };

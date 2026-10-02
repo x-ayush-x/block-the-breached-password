@@ -41,7 +41,7 @@ export function parseReport(text) {
   if (!r || r.schema !== REPORT_SCHEMA || !['live', 'benchmark'].includes(r.mode) ||
       typeof r.datasetId !== 'string' || !r.datasetId || r.datasetId.length > 160 || typeof r.policyVersion !== 'string' || r.policyVersion.length > 80 ||
       !Number.isFinite(Date.parse(r.finishedAt)) || !['complete', 'cancelled', 'interrupted'].includes(r.phase) ||
-      (r.mode === 'benchmark' && !['normal', 'outage'].includes(r.scenario))) throw new Error('Unsupported report. Export a v1.4 report first.');
+      (r.mode === 'benchmark' && !['normal', 'outage'].includes(r.scenario))) throw new Error('Unsupported report. Export a supported v1.4 or newer report first.');
   const s = r.summary;
   if (!s || !['total','tested','breached','clear','unknown','pending'].every(k => Number.isSafeInteger(s[k]) && s[k] >= 0) ||
       !s.total || s.total > 1000 || s.tested !== s.breached + s.clear || s.total !== s.tested + s.unknown + s.pending ||

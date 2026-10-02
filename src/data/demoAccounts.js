@@ -15,10 +15,16 @@ export function generateDemoPassword() {
   );
 }
 
+export function demoComposition(total) {
+  if (![20, 100].includes(total)) throw new Error("Unsupported demonstration size");
+  const common = Math.round(total * 0.23);
+  return { common, random: total - common };
+}
+
 export function* generateDemoAccounts(total = 100) {
   if (![20, 100].includes(total))
     throw new Error("Unsupported demonstration size");
-  const commonCount = Math.round(total * 0.23);
+  const { common: commonCount } = demoComposition(total);
   for (let i = 0; i < total; i++) {
     yield {
       id: `DEMO-${String(i + 1).padStart(3, "0")}`,

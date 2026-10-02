@@ -3,17 +3,17 @@
 .lab-control progress, .lab-control > p { grid-column: 1 / -1; margin: 0; }
 .lab-actions { align-self: center; }
 .lab-summary, .lab-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 24px 0; }
-.lab-summary article > span { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: #526580; }
-.lab-summary strong { display: block; font-size: 30px; color: #142640; margin: 12px 0; }
-.lab-summary p, .lab-card > p { color: #526580; font-size: 14px; line-height: 1.6; }
+.lab-summary article > span { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--text); }
+.lab-summary strong { display: block; font-size: 30px; color: var(--text); margin: 12px 0; }
+.lab-summary p, .lab-card > p { color: var(--text); font-size: 14px; line-height: 1.6; }
 .lab-card h2 { font-size: 19px; margin: 20px 0 10px; }
 .lab-card dl { margin: 20px 0 0; }
-.lab-card dl > div { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid #e6ebf2; padding: 10px 0; font-size: 12px; }
-.lab-card dt { color: #526580; }
+.lab-card dl > div { display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); padding: 10px 0; font-size: 12px; }
+.lab-card dt { color: var(--text); }
 .lab-card dd { text-align: right; font-weight: 650; margin: 0; }
-.lab-verdict { border-radius: 6px; background: #edf0f5; color: #526580; padding: 6px 9px; font-size: 11px; font-weight: 750; }
-.lab-verdict.pass { background: #e8f6ee; color: #146345; }
-.lab-verdict.fail { background: #fff0f0; color: #a42c3a; }
-.lab-card .lab-reason { background: #f5f7fb; padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 0; }
+.lab-verdict { border-radius: 6px; background: var(--surface-soft); color: var(--text); padding: 6px 9px; font-size: 11px; font-weight: 750; }
+.lab-verdict.pass { background: var(--surface-soft); color: var(--success); }
+.lab-verdict.fail { background: var(--surface-soft); color: var(--danger); }
+.lab-card .lab-reason { background: var(--surface-soft); padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 0; }
 @media (max-width: 1200px) { .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .lab-summary, .lab-grid, .lab-control { grid-template-columns: 1fr; } .lab-actions .button { width: 100%; } }
