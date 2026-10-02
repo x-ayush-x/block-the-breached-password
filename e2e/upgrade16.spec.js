@@ -94,8 +94,8 @@ test('illustrative mask stays inside its card with wide fallback glyphs', async 
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/');
   await expect(page.locator('h1')).toBeVisible();
-  await page.addStyleTag({ content: '.flow-secret > span { font-family: monospace; font-size: 26px; }' });
   const mask = page.locator('.flow-secret > span');
+  await mask.evaluate(el => { el.style.fontFamily = 'monospace'; el.style.fontSize = '26px'; });
   expect(await mask.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
