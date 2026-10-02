@@ -70,7 +70,7 @@ export default function App() {
       >
         Skip to content
       </a>
-      <Navbar page={page} />
+      <Navbar key={page} page={page} />
       <div className="main-shell">
         <header className="topbar">
           <div>

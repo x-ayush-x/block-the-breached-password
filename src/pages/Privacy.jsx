@@ -173,7 +173,7 @@ export default function Privacy({ audit }) {
           <span className="tag">NOT A DURABLE AUDIT LOG</span>
         </div>
         {audit.length ? (
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0} role="region" aria-label="Session activity table">
             <table>
               <thead>
                 <tr>

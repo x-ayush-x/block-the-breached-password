@@ -31,7 +31,9 @@ test('lab fits a phone and clears results after leaving', async ({ page }) => {
   await page.getByRole('button', { name: 'Run security tests', exact: true }).click();
   await expect(page.getByText('9 of 9 completed · 9 passed · complete.', { exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('button', { name: 'Explore pages' }).click();
   await page.getByRole('link', { name: 'Overview', exact: true }).click();
+  await page.getByRole('button', { name: 'Explore pages' }).click();
   await page.getByRole('link', { name: 'Security test lab', exact: true }).click();
   await expect(page.getByText('Ready. No tests have run yet.')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Export evidence' })).toBeDisabled();
