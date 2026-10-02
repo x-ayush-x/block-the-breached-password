@@ -35,7 +35,7 @@ export default function SecurityLab() {
     }
   }
   return <>
-    <PageHeading eyebrow="SECURITY TEST LAB · V1.5" title="Show the decision. Test the failure." description="Nine controlled scenarios exercise the same security engine used by signup and reset.">
+    <PageHeading eyebrow="SECURITY TEST LAB · V1.6" title="Show the decision. Test the failure." description="Nine controlled scenarios exercise the same security engine used by signup and reset.">
       <button className="button secondary" disabled={!results.length || running} onClick={() => downloadReport(labReport(results, phase, selected), 'security-lab-evidence.json')}><Icon name="download" size={17} /> Export evidence</button>
     </PageHeading>
     <div className="dataset-banner"><Icon name="info" size={20} /><p><strong>Local simulations. No live HIBP requests.</strong> Public synthetic fixtures and mock responses make this demo reproducible. Signup and reset follow the explicitly selected demonstration mode above.</p></div>

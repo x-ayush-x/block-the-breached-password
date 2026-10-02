@@ -1,4 +1,4 @@
-> **HELLO WORLD v1.5** — refreshed light/dark/system themes, clearer synthetic datasets, a teachable Test Lab and stronger freshness checks. Start with [v1.5 macOS update instructions](docs/UPGRADE-1.5-MACOS.md). The repository and Pages path remain `block-the-breached-password`.
+> **HELLO WORLD v1.6** — clearer typography and spacing, accessible mobile navigation, dashboard actions up front, and fixes for reset validation and result states. Start with [v1.6 macOS instructions](docs/UPGRADE-1.6-MACOS.md) and [validation notes](docs/VALIDATION-1.6.md). The repository and Pages path remain `block-the-breached-password`.
 
 > Version 1.2 adds a clearly labelled local 1,000-account benchmark and outage scenario. See [benchmark instructions](docs/BENCHMARK-1.2.md).
 

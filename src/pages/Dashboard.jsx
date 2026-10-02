@@ -162,6 +162,7 @@ export default function Dashboard({ onAudit, offline = false }) {
         <label htmlFor="analysis-mode"><strong>Analysis mode</strong></label>
         <select id="analysis-mode" value={mode} disabled={running} onChange={(event) => {
           const next = event.target.value;
+          datasetId.current = null;
           setMode(next); setTotal(next === "benchmark" ? 1000 : 100);
           setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");
         }}>
@@ -169,54 +170,7 @@ export default function Dashboard({ onAudit, offline = false }) {
           <option value="benchmark">Local mock benchmark · 1,000 accounts</option>
         </select>
         {mockMode && <div className="notice warning" role="status"><strong>MOCK BENCHMARK — NO LIVE HIBP REQUESTS</strong><p>Results come from a fixed synthetic corpus. They do not measure real-world breach exposure or HIBP speed. Signup and reset follow the explicitly selected demonstration mode above.</p></div>}
-        {mockMode && <div className="field"><label htmlFor="benchmark-scenario">Benchmark scenario</label><select id="benchmark-scenario" value={scenario} disabled={running} onChange={(event) => {setScenario(event.target.value); setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");}}><option value="normal">Normal · complete 1,000 checks</option><option value="outage">Service outage · demonstrate safe failure</option></select></div>}
-      </section>
-      <section className="panel dataset-composition" aria-label="Dataset composition">
-        <div className="spread"><span className="eyebrow">WHAT ARE WE CHECKING?</span><span className="source-badge">{mockMode ? "LOCAL MOCK RESPONSES" : "LIVE HIBP RESPONSES"}</span></div>
-        <h2>Synthetic accounts. No employee passwords.</h2>
-        <p>These test IDs are generated for this demonstration. They are not employees, registered users or records collected from signup.</p>
-        <div className="composition-grid">
-          <div><strong>{composition.common}</strong><span>inputs repeating five public common-password examples</span></div>
-          <div><strong>{composition.random}</strong><span>{mockMode ? "fixed synthetic inputs absent from the mock corpus" : "freshly generated random inputs"}</span></div>
-        </div>
-        <p className="fine-print">{mockMode ? "The normal mock run is designed to yield 230 matches out of 1,000. This is a local test corpus, not evidence of real exposure." : `With all checks successful, if only the common examples match, this dataset yields ${Math.round(composition.common / total * 100)}%. HIBP determines each result; the input mix explains why runs often have the same percentage.`}</p>
-        <p className="privacy-boundary"><Icon name="lock" size={16} /> No credential upload. No employee directory. A password match does not prove a person’s account was breached.</p>
-      </section>
-      <DashboardCards mockMode={mockMode} summary={summary} hasRun={phase !== "idle"} />
-      <section className="panel performance-panel" aria-label="Run performance">
-        <h2>Run performance</h2>
-        <p className="muted">{mockMode ? "Local mock measurements. No external requests. Each mock request includes a 2ms timer." : "Measured for this run. Reused results avoid another HIBP request."}</p>
-        <dl className="performance-grid">
-          {[
-            ["Completed checks", summary.tested],
-            ["Failed checks", summary.unknown],
-            [(mockMode ? "Mock requests started" : "API requests started"), metrics?.requestsStarted],
-            ["Requests avoided by reuse", metrics?.reusedResults],
-            [(mockMode ? "Valid Mock responses" : "Valid API responses"), metrics?.responsesReceived],
-            [(mockMode ? "Failed Mock requests" : "Failed API requests"), metrics?.requestsFailed],
-            [(mockMode ? "Cancelled Mock requests" : "Cancelled API requests"), metrics?.requestsCancelled],
-            ["Elapsed time", metrics ? `${(metrics.elapsedMs / 1000).toFixed(1)} s` : null],
-          ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{phase === "idle" ? "—" : value ?? "—"}</dd></div>)}
-        </dl>
-        <p className="fine-print">{mockMode ? "Mock requests stay in memory. Elapsed time includes artificial timer delays and excludes mock corpus setup." : "Requests started counts application fetch attempts, not guaranteed server arrivals."} {!mockMode && "Time includes local processing and network waits."} Reuse counts successful cache hits within this run. Failed and cancelled requests are separate from completed account checks.</p>
-      </section>
-      <div className="dashboard-grid">
-        <section className="panel analysis-panel">
-          <div className="section-header">
-            <div>
-              <h2>Run an exposure analysis</h2>
-              <p className="muted">
-                {mockMode ? "The same hashing, parsing and matching engine, with local mock responses." : "A live check for each test account. No invented results."}
-              </p>
-            </div>
-            <span className={`pill ${running ? "working" : ""}`}>
-              {running
-                ? "Processing"
-                : phase === "complete"
-                  ? "Run finished"
-                  : "Ready to inspect"}
-            </span>
-          </div>
+        {mockMode && <div className="field"><label htmlFor="benchmark-scenario">Benchmark scenario</label><select id="benchmark-scenario" value={scenario} disabled={running} onChange={(event) => {setScenario(event.target.value); datasetId.current = null; setRows([]); setMetrics(null); setPhase("idle"); setFinishedAt(null); setPage(0); setFilter("all");}}><option value="normal">Normal · complete 1,000 checks</option><option value="outage">Service outage · demonstrate safe failure</option></select></div>}
           <div className="dataset-controls">
             <div className="field">
               <label htmlFor="dataset-size">Dataset size</label>
@@ -226,11 +180,13 @@ export default function Dashboard({ onAudit, offline = false }) {
                 disabled={running}
                 onChange={(e) => {
                   setTotal(Number(e.target.value));
+                  datasetId.current = null;
                   setRows([]);
                   setMetrics(null);
                   setPhase("idle");
                   setFinishedAt(null);
                   setPage(0);
+                  setFilter("all");
                 }}
               >
                 {mockMode ? <option value={1000}>1,000 synthetic accounts · Mock only</option> : <><option value={20}>20 test accounts · Quick demo</option>
@@ -247,6 +203,25 @@ export default function Dashboard({ onAudit, offline = false }) {
                 {phase === "idle" ? "Run analysis" : "Run again"}
               </button>
             )}
+          </div>
+      </section>
+      <DashboardCards mockMode={mockMode} summary={summary} hasRun={phase !== "idle"} />
+      <div className="dashboard-grid">
+        <section className="panel analysis-panel">
+          <div className="section-header">
+            <div>
+              <h2>Run an exposure analysis</h2>
+              <p className="muted">
+                {mockMode ? "The same hashing, parsing and matching engine, with local mock responses." : "A live check for each test account. No invented results."}
+              </p>
+            </div>
+            <span className={`pill ${running ? "working" : ""}`}>
+              {running
+                ? "Processing"
+                : phase === "complete"
+                  ? "Run finished"
+                  : phase === "cancelled" ? "Cancelled" : phase === "interrupted" ? "Incomplete" : "Ready to inspect"}
+            </span>
           </div>
           <div className="spread progress-label">
             <span>
@@ -308,7 +283,7 @@ export default function Dashboard({ onAudit, offline = false }) {
             <svg
               viewBox="0 0 180 180"
               role="img"
-              aria-label={`${summary.breached} breached, ${summary.clear} not found, ${summary.unknown} unknown, ${summary.pending} pending`}
+              aria-label={`${summary.breached} ${mockMode ? "mock matches" : "breached"}, ${summary.clear} ${mockMode ? "no mock match" : "not found"}, ${summary.unknown} unknown, ${summary.pending} pending`}
             >
               <circle
                 cx="90"
@@ -383,15 +358,17 @@ export default function Dashboard({ onAudit, offline = false }) {
             }}
           >
             <option value="all">All results</option>
-            <option value="breached">Breached</option>
-            <option value="clear">Not found</option>
+            <option value="breached">{labels.breached}</option>
+            <option value="clear">{labels.clear}</option>
             <option value="unknown">Unknown</option>
           </select>
         </div>
         {rows.length ? (
           <>
-            <div className="table-scroll">
+            {!visible.length && <div className="empty-state" role="status"><h3>No results match this filter</h3><p>Choose another status or show all results.</p><button className="button secondary" onClick={() => { setFilter("all"); setPage(0); }}>Show all results</button></div>}
+            <div className="table-scroll" tabIndex={0} role="region" aria-label="Account results table">
               <table>
+                <caption className="sr-only">Synthetic test account decisions for the selected filter</caption>
                 <thead>
                   <tr>
                     <th>TEST ACCOUNT</th>
@@ -452,6 +429,34 @@ export default function Dashboard({ onAudit, offline = false }) {
             <p>Start an analysis to see account-level decisions.</p>
           </div>
         )}
+      </section>
+      <section className="panel dataset-composition" aria-label="Dataset composition">
+        <div className="spread"><span className="eyebrow">WHAT ARE WE CHECKING?</span><span className="source-badge">{mockMode ? "LOCAL MOCK RESPONSES" : "LIVE HIBP RESPONSES"}</span></div>
+        <h2>Synthetic accounts. No employee passwords.</h2>
+        <p>These test IDs are generated for this demonstration. They are not employees, registered users or records collected from signup.</p>
+        <div className="composition-grid">
+          <div><strong>{composition.common}</strong><span>inputs repeating five public common-password examples</span></div>
+          <div><strong>{composition.random}</strong><span>{mockMode ? "fixed synthetic inputs absent from the mock corpus" : "freshly generated random inputs"}</span></div>
+        </div>
+        <p className="fine-print">{mockMode ? "The normal mock run is designed to yield 230 matches out of 1,000. This is a local test corpus, not evidence of real exposure." : `With all checks successful, if only the common examples match, this dataset yields ${Math.round(composition.common / total * 100)}%. HIBP determines each result; the input mix explains why runs often have the same percentage.`}</p>
+        <p className="privacy-boundary"><Icon name="lock" size={16} /> No credential upload. No employee directory. A password match does not prove a person’s account was breached.</p>
+      </section>
+      <section className="panel performance-panel" aria-label="Run performance">
+        <h2>Run performance</h2>
+        <p className="muted">{mockMode ? "Local mock measurements. No external requests. Each mock request includes a 2ms timer." : "Measured for this run. Reused results avoid another HIBP request."}</p>
+        <dl className="performance-grid">
+          {[
+            ["Completed checks", summary.tested],
+            ["Failed checks", summary.unknown],
+            [(mockMode ? "Mock requests started" : "API requests started"), metrics?.requestsStarted],
+            ["Requests avoided by reuse", metrics?.reusedResults],
+            [(mockMode ? "Valid Mock responses" : "Valid API responses"), metrics?.responsesReceived],
+            [(mockMode ? "Failed Mock requests" : "Failed API requests"), metrics?.requestsFailed],
+            [(mockMode ? "Cancelled Mock requests" : "Cancelled API requests"), metrics?.requestsCancelled],
+            ["Elapsed time", metrics ? `${(metrics.elapsedMs / 1000).toFixed(1)} s` : null],
+          ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{phase === "idle" ? "—" : value ?? "—"}</dd></div>)}
+        </dl>
+        <p className="fine-print">{mockMode ? "Mock requests stay in memory. Elapsed time includes artificial timer delays and excludes mock corpus setup." : "Requests started counts application fetch attempts, not guaranteed server arrivals."} {!mockMode && "Time includes local processing and network waits."} Reuse counts successful cache hits within this run. Failed and cancelled requests are separate from completed account checks.</p>
       </section>
       <section className="panel printable-report" aria-label="Printable security report">
         <h2>HELLO WORLD · Security report</h2>

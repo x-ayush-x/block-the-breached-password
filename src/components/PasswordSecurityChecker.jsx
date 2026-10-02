@@ -66,12 +66,13 @@ export default function PasswordSecurityChecker({
       <section className="decision-breakdown" aria-label="Live decision breakdown">
         <h3>Live decision breakdown</h3>
         <ul>
-          <li>Length: {policy.lengthOK ? "Pass" : "Blocked — use 15–128 characters"}</li>
+          <li>Length: {!password ? "Awaiting input" : policy.lengthOK ? "Pass" : "Blocked — use 15–128 characters"}</li>
           <li>Common/account-related values: {!password ? "Awaiting input" : policy.blocked ? "Blocked — choose a different whole value" : "Pass — local list only"}</li>
           <li>Strength: {strength.label} — advisory; never overrides a breach match.</li>
-          <li>Breach: {breach.status}{security.offline ? " (MOCK ONLY)" : " (live HIBP)"}</li>
+          <li>Breach: {{ idle: "Not checked", checking: "Checking", clear: "No match", breached: "Match found — blocked", error: "Unavailable — blocked", expired: "Expired — check again" }[breach.status]}{security.offline ? " (MOCK ONLY)" : " (live HIBP)"}</li>
         </ul>
         <p>Processing stages · {security.offline ? "local mock transport" : "live transport"}</p>
+        {!security.stages.length && <p className="muted">Stages appear when you select “Check password securely”.</p>}
         <ol aria-live="polite" aria-relevant="additions">{security.stages.map((stage, i) => <li key={i}>{stage}</li>)}</ol>
         {breach.status === "error" && <p role="status">Check failed. Submission remains blocked.</p>}
       </section>

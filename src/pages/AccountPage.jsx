@@ -26,7 +26,8 @@ export default function AccountPage({ reset = false, onAudit, offline = false })
     normalizePassword(confirm) === normalizePassword(security.password);
   const emailOK =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
-  const ready = decision.allowed && (reset ? matches : emailOK);
+  const contextOK = emailOK || (reset && !email);
+  const ready = decision.allowed && contextOK && (!reset || matches);
   function loadDemo(kind) {
     try {
       security.changePassword(
@@ -48,7 +49,7 @@ export default function AccountPage({ reset = false, onAudit, offline = false })
   function submit(event) {
     event.preventDefault();
     const currentDecision = security.decisionNow(email);
-    if (!currentDecision.allowed || (reset ? !matches : !emailOK)) {
+    if (!currentDecision.allowed || !contextOK || (reset && !matches)) {
       onAudit(reset ? "Reset blocked" : "Signup blocked", "Rejected");
       setNotice(
         "Submission blocked. Complete all checks for the current password.",
@@ -162,7 +163,7 @@ export default function AccountPage({ reset = false, onAudit, offline = false })
               )}
               <div className="decision-note" role="status">
                 <Icon name={decision.allowed ? "check" : "info"} size={16} />
-                <p>{decision.reason}{!ready && decision.allowed && (reset ? " Confirm the same password to continue." : " Enter a valid email address to continue.")}</p>
+                <p>{decision.reason}{decision.allowed && !contextOK && (reset ? " Enter a valid email address or clear the optional field." : " Enter a valid email address to continue.")}{decision.allowed && reset && !matches && " Confirm the same password to continue."}</p>
               </div>
               <button
                 type="submit"

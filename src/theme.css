@@ -50,7 +50,7 @@ body { background: var(--canvas); color: var(--text); }
 .nav-item.active { background: #234564; box-shadow: inset 3px 0 #7ee0ca; }
 .nav-dot { background: #7ee0ca; }
 .topbar { background: var(--surface); }
-.theme-control { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+.theme-control { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .theme-control select { color: var(--text); background: var(--surface-soft); border: 1px solid var(--line); border-radius: 9px; padding: 8px; min-height: 38px; max-width: 105px; }
 h1 { letter-spacing: -1.3px; }
 h1, h2, h3 { color: var(--text); }
@@ -78,7 +78,7 @@ input::placeholder { color: var(--muted); opacity: .85; }
 .dataset-composition { margin: 20px 0 24px; padding: 26px; }
 .dataset-composition h2 { margin-top: 16px; }
 .dataset-composition > p { color: var(--muted); font-size: 13px; }
-.source-badge { display: inline-flex; font-size: 10px; font-weight: 750; letter-spacing: .05em; border: 1px solid var(--line); background: var(--surface-soft); color: var(--text); padding: 8px 10px; border-radius: 20px; }
+.source-badge { display: inline-flex; font-size: 12px; font-weight: 750; letter-spacing: .05em; border: 1px solid var(--line); background: var(--surface-soft); color: var(--text); padding: 8px 10px; border-radius: 20px; }
 .composition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
 .composition-grid > div { display: flex; align-items: center; gap: 18px; padding: 18px; border-radius: 12px; background: var(--surface-soft); }
 .composition-grid strong { font-size: 34px; color: var(--text); }

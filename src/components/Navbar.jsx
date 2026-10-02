@@ -1,8 +1,16 @@
 import Icon from "./Icon.jsx";
 import { NAV } from "../data/navigation.js";
+import { useRef, useState } from "react";
 export default function Navbar({ page }) {
+  const [expanded, setExpanded] = useState(false);
+  const toggle = useRef(null);
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" onKeyDown={event => {
+      if (event.key === "Escape" && expanded) {
+        setExpanded(false);
+        toggle.current?.focus();
+      }
+    }}>
       <a href="#home" className="brand">
         <span className="brand-icon">
           <Icon size={25} />
@@ -19,7 +27,10 @@ export default function Navbar({ page }) {
         </span>
       </div>
       <p className="nav-label">WORKSPACE</p>
-      <nav aria-label="Main navigation">
+      <button ref={toggle} className="mobile-nav-toggle" aria-expanded={expanded} aria-controls="workspace-navigation" onClick={() => setExpanded(!expanded)}>
+        {expanded ? "Close navigation" : "Explore pages"}<span aria-hidden="true">{expanded ? "−" : "+"}</span>
+      </button>
+      <nav id="workspace-navigation" className={expanded ? "expanded" : ""} aria-label="Main navigation">
         {NAV.map(([id, label, icon]) => (
           <a
             key={id}
@@ -45,7 +56,7 @@ export default function Navbar({ page }) {
         </p>
       </div>
       <div className="sidebar-version">
-        <span className="dot" /> Hackathon prototype <span>v1.5</span>
+        <span className="dot" /> Hackathon prototype <span>v1.6</span>
       </div>
     </aside>
   );
