@@ -22,7 +22,7 @@ Changes are recorded newest first. Application versions and password-policy vers
 - Authentication remains simulated. No employee passwords, accounts or real-world exposure estimates were added.
 - Includes the v1.6 layout hotfix and Linux PR checks. Pages deployment configuration remains unchanged.
 - Deferred strength bundle size advisory remains. Expanded panels are session-local; they reset when the dashboard remounts.
-- Local validation: 84 unit/service and 38 browser tests, lint, standard build and Pages build passed; HIBP responses mocked. No v1.7 GitHub/Linux run or deployment yet.
+- Local validation: 84 unit/service and 38 browser tests, lint, standard build and Pages build passed; HIBP responses mocked. These were packaging-time results. [PR #5](https://github.com/x-ayush-x/block-the-breached-password/pull/5) carries current Linux validation; no merge or deployment was performed by this update.
 - [Detailed scope, migration and validation](docs/releases/1.7.md).
 
 ## 1.6.0 — 2026-10-02
