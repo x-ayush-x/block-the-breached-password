@@ -350,6 +350,7 @@ test('performance report matches intercepted requests and exported counters', as
   await page.goto('/#dashboard');
   await page.getByRole('button', { name: 'Run analysis', exact: true }).click();
   await expect(page.getByText('100 of 100 processed')).toBeVisible();
+  await page.getByText('Technical details: requests, reuse and timing', { exact: true }).click();
   const panel = page.getByRole('region', { name: 'Run performance' });
   const metric = label => panel.locator('.performance-grid > div').filter({ has: page.getByText(label, { exact: true }) }).locator('dd');
   await expect(metric('API requests started')).toHaveText(String(calls));

@@ -27,6 +27,7 @@ test('system theme follows OS; manual themes preserve a pending check and keep s
 
 test('dashboard explains 100 and 20 input mixes without claiming employee access', async ({ page }) => {
   await page.goto('/#dashboard');
+  await page.getByText('Why does the percentage often repeat?', { exact: true }).click();
   const mix = page.getByRole('region', { name: 'Dataset composition' });
   await expect(mix.getByRole('heading', { name: 'Synthetic accounts. No employee passwords.' })).toBeVisible();
   await expect(mix.getByText('23', { exact: true })).toBeVisible();
@@ -36,6 +37,7 @@ test('dashboard explains 100 and 20 input mixes without claiming employee access
   await expect(mix.getByText('15', { exact: true })).toBeVisible();
   await expect(mix.getByText(/yields 25%/)).toBeVisible();
   await page.getByLabel('Offline demonstration mode').check();
+  await page.getByText('Why does the percentage often repeat?', { exact: true }).click();
   await expect(mix.getByText('230', { exact: true })).toBeVisible();
   await expect(mix.getByText('LOCAL MOCK RESPONSES', { exact: true })).toBeVisible();
 });

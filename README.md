@@ -1,226 +1,388 @@
-> **HELLO WORLD v1.6** — clearer typography and spacing, accessible mobile navigation, dashboard actions up front, and fixes for reset validation and result states. Start with [v1.6 macOS instructions](docs/UPGRADE-1.6-MACOS.md) and [validation notes](docs/VALIDATION-1.6.md). The repository and Pages path remain `block-the-breached-password`.
-
-> Version 1.2 adds a clearly labelled local 1,000-account benchmark and outage scenario. See [benchmark instructions](docs/BENCHMARK-1.2.md).
-
-> Version 1.1 adds live prefix evidence and measured dashboard performance. See [upgrade instructions](docs/UPGRADE-1.1.md).
-
 # HELLO WORLD
 
-**Stop compromised passwords before they become your next security incident.**
+### Block the Breached Password · Microsoft Innovate hackathon prototype
 
-A Microsoft Innovate hackathon prototype: a browser-only password-policy gate with HIBP Pwned Passwords, local strength feedback and a demonstration exposure dashboard.
+**Reject known compromised passwords before simulated signup or reset, while keeping the password inside the browser.**
 
-> Authentication is simulated. No user account, login session, password database or real recovery flow is created. This project demonstrates privacy-preserving breach screening, not a production identity provider or NIST certification.
+HELLO WORLD is our hackathon team and application name. The repository remains `block-the-breached-password` so its existing GitHub Pages path continues to work.
 
-## Start here on your Mac
+| Project status | Current implementation |
+| --- | --- |
+| Application version | **1.7.0** |
+| Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
+| Authentication | Simulated; no real accounts, login sessions or reset emails |
+| Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
+| Dashboard data | Synthetic test accounts; never collected employee credentials |
+| Offline demonstration | Explicit local mock corpus; never an automatic fallback |
+| Persistence | No application credential database, browser storage or analytics |
 
-You do not need to copy source files manually or run create-vite.
+[Repository](https://github.com/x-ayush-x/block-the-breached-password) · [GitHub Pages address](https://x-ayush-x.github.io/block-the-breached-password/) · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/README.md)
 
-1. Stop your old Phase 1 server with **Control+C** in its VS Code terminal.
-2. Extract this ZIP into a **new folder**. Keep the Phase 1 folder as your backup.
-3. In VS Code choose **File → Open Folder** and select the new `hello-world-complete` folder containing this README and `package.json`.
-4. Open **Terminal → New Terminal** and run these commands one at a time:
+The Pages address is the configured publication location. Its deployed version depends on the latest successful deployment; it is not proof that the current local release is already published.
+
+## Contents
+
+1. [Problem and scope](#problem-and-scope)
+2. [What is new in v1.7](#what-is-new-in-v17)
+3. [Run on macOS](#run-on-macos)
+4. [Every page](#every-page)
+5. [A first demonstration](#a-first-demonstration)
+6. [Understand the dashboard](#understand-the-dashboard)
+7. [Live, mock and offline modes](#live-mock-and-offline-modes)
+8. [Architecture and request lifecycle](#architecture-and-request-lifecycle)
+9. [Policy and decision rules](#policy-and-decision-rules)
+10. [Reports, printing and comparison](#reports-printing-and-comparison)
+11. [Privacy and security boundaries](#privacy-and-security-boundaries)
+12. [Technology and source map](#technology-and-source-map)
+13. [Commands and testing](#commands-and-testing)
+14. [GitHub and deployment](#github-and-deployment)
+15. [Troubleshooting](#troubleshooting)
+16. [Release records and future work](#release-records-and-future-work)
+17. [Learning materials and references](#learning-materials-and-references)
+
+## Problem and scope
+
+A password can be long and difficult to guess but still appear in a known breach. Reusing it creates risk even when a strength meter calls it strong. The challenge asks for signup/reset screens, local strength feedback, privacy-preserving breach checks and a report showing the percentage of **test accounts** with matched passwords.
+
+This project implements that demonstration. It does **not** give a company administrator access to employee passwords. The dashboard generates public/synthetic inputs locally; it does not ingest credentials from signup, a directory, a database or a file upload.
+
+A match means the proposed password value appears in the checked corpus. It does not prove that this particular person's account was breached. No match means no known match in that lookup, not complete safety.
+
+The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
+
+## What is new in v1.7
+
+- Dashboard organized around **choose a demonstration → understand results → keep a report**.
+- Actual count-based formula explains the match rate, alongside successful coverage and next steps.
+- The ring's center shows successfully checked accounts out of all accounts; the rate card retains the successful-check denominator. These denominators are explicitly distinguished.
+- Expandable definitions explain match, no match, unknown and pending. Technical request counters and dataset composition remain available without dominating the initial screen.
+- Mock report sentences say **match the local mock corpus**, avoiding language that implies a real breach finding.
+- Rebuilt README, consolidated historical changelog and a repeatable release-notes process.
+- Includes the v1.6 Linux narrow-screen hotfix and pull-request validation workflow.
+
+See [v1.7 release notes](docs/releases/1.7.md) for exact scope, migration, validation and limitations. Historical test counts belong to their original releases, not the current application.
+
+## Run on macOS
+
+### Prerequisites
+
+Use Node.js **24 or newer**, as specified by `package.json`, and npm. Node runs development/build tools here; it does not make this application a Node backend.
 
 ```bash
-npm install
+node -v
+npm -v
+```
+
+If either command is missing, install Node from its [official download page](https://nodejs.org/en/download), then reopen Terminal or VS Code. Installing Node/npm is different from installing this project's dependencies.
+
+### Option A: clone the repository
+
+```bash
+git clone https://github.com/x-ayush-x/block-the-breached-password.git
+cd block-the-breached-password
+npm ci
 npm run dev
 ```
 
-Use **Node.js 24 LTS** and npm. Check with `node -v` and `npm -v`; install from https://nodejs.org/en/download if needed. Open the local address printed by Vite in Chrome, normally http://127.0.0.1:5173. Leave the terminal running. Internet is required for live HIBP lookups. No API key, account or backend configuration is needed.
+A clone downloads Git history and the default branch. An unmerged release PR is not automatically included. Use its branch explicitly if you intend to preview that release.
 
-To reproduce the exact dependency tree after the first installation, use `npm ci` instead of `npm install`.
+### Option B: use the complete ZIP
 
-## Problem and solution
+Extract into a new folder and retain your existing project as a backup. In Terminal, type `cd `, drag the extracted folder containing `package.json` into Terminal, then press Return. Run:
 
-A SaaS identity team needs to reject previously breached passwords during signup and reset without disclosing a proposed password to a breach service. Sending a whole password—or its entire fast hash—would unnecessarily reveal a useful secret or password fingerprint.
+```bash
+npm ci
+npm run dev
+```
 
-Our browser sends a five-character hash prefix, retrieves a group of candidate suffixes, and makes the exact comparison locally. Strength and breach status remain separate. A positive breach result always rejects the simulated submission; unknown results never count as clear.
+`npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-## Features
+If using an update-only ZIP, follow [v1.7 update instructions](docs/UPGRADE-1.7-MACOS.md). An extracted ZIP is not a Git repository.
 
-- Overview, signup, reset, dashboard, Security Test Lab, architecture, privacy and policy screens.
-- Reusable password component and security hook for both account flows.
-- Local zxcvbn guessability estimate, show/hide, paste and password-manager support.
-- Explicit HIBP checks; no request on every keystroke.
-- AbortController cancellation plus revision tracking to ignore stale responses.
-- Twelve-second request timeout; five-minute expiry timer plus independent submit-time timestamp validation.
-- Strict response parsing; zero-count padding never matches.
-- Policy validation at submission, in addition to disabled buttons.
-- Live analysis of 20 or 100 test accounts, progress, cancel, filtering and pagination.
-- Exportable JSON report containing only test IDs, decisions, timestamps and aggregates.
-- In-memory, capped session activity; no claim of a durable or tamper-proof audit trail.
-- Responsive light, dark and system themes, labelled controls, keyboard focus and reduced-motion support. Appearance stays in memory for the current page session; no browser storage is used.
-- Explicit dataset composition: generated test accounts are not employee accounts.
-- Run all nine Lab scenarios or one at a time, with expected/observed decisions and honest evidence scope.
-- Printable reports, compatible JSON report comparison, guided walkthrough and explicit offline demonstration mode.
-- GitHub Pages workflow runs lint, unit tests and browser tests before the repository-path build.
+### Preview a production build
 
-## First demonstration
+```bash
+npm run build
+npm run preview
+```
 
-1. Open **Sign up**.
-2. Click **Load breached demo**. It loads a public test fixture and a fake email.
-3. Click **Check password securely**. A positive HIBP match displays **Compromised password**; submission remains disabled.
-4. Open Chrome DevTools with **Command+Option+I**, select **Network**, and filter `api.pwnedpasswords.com`.
-5. Check again and inspect the request. Its path ends in five hexadecimal characters. No body, password or full hash is sent. An OPTIONS preflight can also appear.
-6. Click **Generate random demo**, then run the check. If no match is found and policy passes, click **Simulate account creation**.
-7. Try **Reset password** and matching/mismatched confirmation. Use the eye button to read a generated test value if needed; never demonstrate with a real password.
-8. Open **Security dashboard**. Choose 20 accounts for a quicker walkthrough or 100 for the full report, then click **Run analysis**.
-9. Export the non-sensitive report before leaving the dashboard. Navigation cancels analysis and clears that screen's results.
-10. Open **How it works**, **Privacy & proof** and **Password policy**.
+The production files are written to `dist/`. Preview serves them locally. For the hosted repository subpath, use `npm run build:pages`; see deployment below.
 
-Live counts may change. Do not promise 23% before running the dataset. A result of “No known breach found” is not a guarantee of safety.
+## Every page
 
-## Architecture and k-anonymity
+| Page / route | Purpose and important controls | Main source |
+| --- | --- | --- |
+| Overview `#home` | Introduces the problem, checker/dashboard links and an illustrative privacy flow | `src/pages/Home.jsx` |
+| Sign up `#signup` | Email context, password reveal, local rules, strength, explicit check, cancel, stage breakdown, current prefix evidence and simulated submission | `src/pages/AccountPage.jsx` |
+| Reset `#reset` | Same gate, optional email context and matching confirmation; invalid optional email must be corrected or cleared | `src/pages/AccountPage.jsx` |
+| Security dashboard `#dashboard` | Live/mock source, dataset size, run/cancel, formula, coverage, chart, filters, pagination, diagnostics, reports and comparison | `src/pages/Dashboard.jsx` |
+| Security Test Lab `#lab` | Run one or all nine controlled scenarios, inspect expected/observed decisions, cancel and export evidence | `src/pages/SecurityLab.jsx` |
+| How it works `#architecture` | Browser/API flow, prefix/suffix split and decision architecture | `src/pages/HowItWorks.jsx` |
+| Privacy & proof `#privacy` | Independent DevTools instructions, data boundaries and up to 50 in-memory activity events | `src/pages/Privacy.jsx` |
+| Password policy `#policy` | Implemented rules, NIST alignment statement and production limitations | `src/pages/Policy.jsx` |
 
-The browser normalizes the prospective password, estimates guessability and computes SHA-1 using Web Crypto. The 40 hexadecimal characters are split into a five-character prefix and 35-character suffix. A direct HTTPS GET to `https://api.pwnedpasswords.com/range/{prefix}` returns candidate suffixes with occurrence counts. Local exact matching determines breach status.
+Appearance offers System, Light and Dark. The selection stays in memory and resets on reload. On a phone, **Explore pages** opens all routes; Escape closes it and restores focus. The skip link moves keyboard focus into the main content. Route changes cancel active checks and discard page-local results.
 
-The shared prefix groups possible hashes. Candidate-set sizes vary; this is not a fixed-k guarantee, zero knowledge, encryption or complete anonymity. The prefix leaks some information. HIBP also sees connection metadata, including IP address and request timing.
+The shared walkthrough links signup, rejection, privacy evidence, dashboard and Lab. Readiness checks detect a secure context, Web Crypto and a browser network hint; they do not establish HIBP availability.
 
-The request uses `Add-Padding: true`, omits credentials and referrer, prohibits redirects and requests no browser cache. The parser validates every response line and ignores zero-count padding. We do not require a fixed candidate count. Interactive results are not cached. Dashboard ranges are cached only in a per-run in-memory Map that is cleared at completion/cancellation.
+## A first demonstration
 
-SHA-1 is used solely for the HIBP lookup format. Nothing uses SHA-1 for password storage. A future identity service would need a separate secure credential-storage design, such as salted Argon2id, and appropriate operational controls.
+Only use public test inputs, never real credentials.
 
-## Privacy model
+1. Open Sign up and select **Load breached demo**. The public fixture is `passwordpassword`.
+2. Select **Check password securely**. In live mode, HIBP supplies the verdict. A match blocks simulated submission. The public example is also locally blocklisted, so use the Lab's strong-but-exposed scenario to isolate that lesson.
+3. Expand the check's privacy evidence. For independent inspection, open Chrome DevTools with Command+Option+I, choose Network, filter `range` and inspect a fresh explicit check.
+4. Select **Generate random demo**, then check it. A successful no-match plus the local rules and valid email enables the simulation. A generated value is not guaranteed absent from HIBP.
+5. Try reset with matching and mismatched confirmation. Success clears form inputs and creates no real account or credential.
+6. In the dashboard, choose a live 20-account demo or an explicitly local mock benchmark. Run, explain the formula and coverage, then export before navigating away.
+7. Run the Lab's **Strong, but already exposed** case. Correct rejection is a PASS because actual behavior matches the expected behavior.
 
-Application code never intentionally writes entered passwords or full hashes into URLs, logs, analytics, localStorage, sessionStorage, IndexedDB, reports or files. Inputs are controlled React state and temporary JavaScript values. zxcvbn returns some sensitive intermediate details; our wrapper retains only a numeric level, label and generic guidance.
+## Understand the dashboard
 
-On success and unmount, input references are cleared. JavaScript strings cannot be securely zeroed, so this is not a memory-erasure guarantee. A compromised browser, malicious extension or developer-tools session can inspect local data. Password managers are independently controlled by the user.
+### What is a test account?
 
-Production builds include a restrictive CSP meta tag. Vite preview adds CSP response headers including frame restrictions. `public/_headers` is a sample for hosts that support that format; other hosts must configure equivalent headers. Development mode includes Vite development machinery and is not a hardened hosting environment. There are no remote fonts or third-party analytics scripts.
+A generated identifier such as `DEMO-001` represents one synthetic input to the demonstration. It is not a registered user. There is no employee list or password-upload feature.
 
-## Password policy
+| Dataset | Input composition | Source of verdicts |
+| --- | --- | --- |
+| Live, 20 accounts | 5 entries cycling public common examples + 15 fresh random inputs | Real HIBP responses |
+| Live, 100 accounts | 23 entries cycling public common examples + 77 fresh random inputs | Real HIBP responses |
+| Mock, 1,000 accounts | 230 entries cycling mock-listed examples + 770 fixed synthetic inputs absent from that corpus | Local mock responses |
 
-Policy is designed around relevant final NIST SP 800-63B-4 password guidance, checked September 24, 2026. Implementation choices are documented in the Policy screen:
+Live random inputs are 36 hexadecimal characters generated from 18 cryptographically random bytes. Inputs are produced one at a time and excluded from dashboard rows and reports. Public fixtures in source are intentionally non-secret; they are not collected user passwords.
 
-- 15–128 code points after NFC normalization; spaces allowed; no truncation.
-- No mandatory character mix or strength-score threshold.
-- Whole-value common/context blocklist plus live compromised-password checking.
-- Paste, autofill and reveal controls.
-- No routine expiry or security questions; production compromise recovery remains future work.
+### Why does the result often show 23%?
 
-The 128 maximum and five-minute lookup expiry are prototype choices. NIST's password-only minimum is 15; MFA-only use can permit 8, and maximum support should reach at least 64. This is not full NIST compliance. The local example blocklist is deliberately small, not a complete production dictionary.
+In a complete 100-account run, if the 23 common entries match and the other 77 do not, the calculated result is 23%. The 20-account mix would yield 25% under the equivalent outcome. Live verdicts still come from HIBP; the deliberate input mix explains repetition. The normal mock benchmark is explicitly designed to calculate 230/1,000 = 23%. None of these is an estimate of real employee exposure.
 
-## Demonstration dataset
+### Counts and denominators
 
-The 100-account run uses 23 entries drawn from five public common-password fixtures and 77 freshly generated 36-character hexadecimal values. The 20-account run uses 5 common fixtures and 15 random values. Each random value comes from 18 bytes of `crypto.getRandomValues` output. Common entries may repeat to represent reuse across accounts.
+| Term | Meaning |
+| --- | --- |
+| Total | Number of inputs selected for this run |
+| Successfully checked | Match + no match |
+| Match | Positive exact suffix match in the selected corpus |
+| No match | Successful lookup without a positive match; not a safety guarantee |
+| Unknown | A failed check: timeout, network, HTTP or invalid response |
+| Pending | No completed row yet, including unfinished work after cancellation |
+| Processed | Match + no match + unknown |
+| Match rate | Matches ÷ successfully checked × 100, rounded to one decimal |
+| Coverage | Successfully checked ÷ total × 100, rounded to one decimal |
 
-The public fixtures exist in source code and are not confidential credentials. This is an explicit demonstration exception to “no stored plaintext”: we never store collected user passwords. Generated values are produced one account at a time and excluded from every result row.
+**Worked example:** of 20 inputs, 3 match, 9 have no match, 2 are unknown and 6 are pending. Successful checks = 12; processed = 14; match rate = 3/12 = **25%**; coverage = 12/20 = **60%**. The report is incomplete. Calling the rate 3/20 would incorrectly include unresolved inputs in the denominator.
 
-Analysis runs sequentially and reuses repeated prefixes during a run. A rate-limit response or three consecutive failures stops the batch. Errors become **unknown**, unprocessed rows remain **pending**. The percentage denominator is **successfully checked accounts**. Partial reports say they are incomplete. The dataset measures this synthetic sample, never a real organization.
+The ring represents all accounts, including unknown and pending. Its center shows successful coverage as a count. Rate and coverage are different measures; a high coverage is not proof of secure passwords. With zero successful checks the match rate is unavailable, not 0%.
 
-## Tech stack
+### Controls and lifecycle
 
-React, Vite, JavaScript, CSS, browser Web Crypto and zxcvbn. Custom SVG/CSS charts avoid a charting dependency. Node's built-in test runner covers core logic; Playwright covers browser interactions. Node is a development tool here, not a password-processing backend.
+Choose source/size, then Run analysis. Changing configuration resets existing results and dataset identity. Run again starts a fresh analysis and replaces the old report. Cancel retains completed rows and marks the run incomplete. Leaving the page cancels and discards it; export first to keep a report.
 
-## Project structure
+Filters affect the visible table only, not the aggregates or export. Pages display up to ten matching rows. An empty filter explains how to show all results.
+
+Expand **Why does the percentage often repeat?** for composition. Expand **Technical details: requests, reuse and timing** for measured request counts. Sequential processing bounds request load; a per-run prefix cache can serve several test inputs from one response. Therefore accounts checked and request attempts need not be equal. The cache clears after the run. Attempts do not prove server arrival and do not count browser-managed preflight requests.
+
+A rate-limit response or three consecutive errors stops analysis. Unknown/pending work never becomes clear. The mock outage begins HTTP 503 responses at its eighth uncached request; local timing is not a measurement of HIBP speed.
+
+## Live, mock and offline modes
+
+| Context | External HIBP request? | What the result establishes |
+| --- | --- | --- |
+| Signup/reset, live | Only after explicit check | A lookup verdict for the current normalized password |
+| Dashboard, live | During the requested analysis | Results for generated synthetic inputs |
+| Dashboard, local mock benchmark | No | Behavior against a small fixed test corpus |
+| Global offline demonstration | No HIBP calls from signup/reset/dashboard | Explicitly labelled simulations; changing mode clears those pages' state |
+| Security Test Lab | No, regardless of global mode | Engine behavior under controlled fixtures and responses |
+
+A live error never silently selects mock data. Offline demonstration is not an offline-installable PWA: keep the local server running. There is no service worker or guaranteed hosted offline reload. The Lab's request-contract evidence observes arguments supplied to a mock transport, not live packets.
+
+## Architecture and request lifecycle
 
 ```text
+Browser input (temporary React state)
+  → NFC normalization + local policy + local zxcvbn feedback
+  → explicit check
+  → Web Crypto SHA-1 (40 hexadecimal characters)
+  → prefix: 5 characters ── HTTPS GET /range/{prefix} ── HIBP
+  → suffix: 35 characters retained locally             │
+  ← padded candidate suffix/count response ────────────┘
+  → strict parsing + exact local suffix comparison
+  → current result + policy → simulated allow/block decision
+```
+
+The request uses GET, no body, `Add-Padding: true`, omitted credentials/referrer, no-store cache mode and rejected redirects. Count-zero padding never indicates a breach. SHA-1 is an API lookup format here, **not a password-storage algorithm**.
+
+The security hook owns current input, result, AbortController, revision guard and expiry timer. Editing invalidates the result and aborts pending work. Late responses cannot overwrite a newer input. Explicit checks have a 750ms guard, a 12-second request timeout and five-minute result freshness. Submission independently verifies timestamps rather than trusting a possibly delayed timer or disabled button.
+
+The prefix narrows the possible hashes; it is not zero knowledge, a fixed-size anonymity set or guaranteed anonymity. HIBP can still observe prefix, IP, timing and normal connection metadata.
+
+## Policy and decision rules
+
+- NFC-normalized length: **15–128 Unicode code points**; spaces and paste allowed.
+- Raw input above 4,096 JavaScript code units is rejected before expensive processing.
+- Small whole-value common and account-related blocklists; not a complete production dictionary.
+- No mandatory symbol/uppercase mix. Strength is advisory and has no acceptance threshold.
+- A positive breach match always blocks; unchecked, expired, failed or cancelled checks do not approve.
+- Signup also needs valid email context. Reset needs matching normalized confirmation and a valid email if the optional field is supplied.
+
+The Policy page documents the project's intended alignment with relevant NIST SP 800-63B-4 recommendations. Its historical source-check date is retained there. This release does not conduct a new standards review or claim certification/full compliance. The policy identifier stays unchanged because v1.7 changes presentation, not these rules.
+
+## Reports, printing and comparison
+
+JSON reports include source/mode, dataset identity, policy version, scenario, phase, timestamp, aggregate coverage, formula denominator, recommended actions, performance counters and test-ID result rows. They exclude passwords, emails, full hashes, prefixes and suffixes. Lab evidence has its own scenario-report shape.
+
+**Print / Save as PDF** prints the dashboard's aggregate security report. Choose Save as PDF in the browser's print dialog. Navigation and paginated table content are excluded; the report covers all results, regardless of the current filter. Partial reports remain explicitly incomplete.
+
+Comparison accepts supported v1.4-or-newer dashboard JSON exports, at most 1 MB per file. It validates count consistency and retains only allowlisted metadata; imported account rows are not rendered. Both reports must have the same source, dataset/size, policy and scenario, with complete successful coverage. Separate live runs get new dataset IDs, so they cannot be compared as if they were the same population. Output is a difference in **percentage points**, not proof of security improvement. Files are self-reported and unauthenticated. No upload occurs.
+
+## Privacy and security boundaries
+
+| Data | Location/use | External transmission or persistence |
+| --- | --- | --- |
+| Password and confirmation | Temporary browser state/values | Not logged, stored by app or exported |
+| Email context | Local account-related feedback | Not sent to HIBP or reports |
+| Full hash and suffix | Temporary local lookup values | Not sent or exported |
+| Five-character prefix | HIBP range URL and current evidence UI | Sent to HIBP only in live mode |
+| Breach verdict | Current state / synthetic result row | Non-sensitive synthetic rows may be exported |
+| Activity event | Fixed action/outcome labels and time, last 50 in memory | No analytics or durable audit log |
+| Theme selection | Memory for this page session | Resets on reload |
+| Imported report | Browser memory; validated metadata | No upload; file remains user-controlled |
+
+Input references clear on success/unmount, but JavaScript memory cannot be reliably wiped. Extensions, DevTools and password managers are separate considerations. Local code is not a defense against a compromised browser.
+
+Production HTML includes a CSP meta tag restricting script/style sources and network destinations. Vite preview additionally configures response headers. `public/_headers` is a host-specific example, not proof those headers are deployed on GitHub Pages. HTTPS depends on the host. Development mode includes Vite tooling and differs from production.
+
+This remains a client-side prototype. A user can alter its JavaScript or bypass UI checks. A real backend blindly trusting a browser's “passed” flag would not solve that. Production authentication needs a separately designed trusted enforcement boundary, secure credential handling, ownership verification, recovery, session security, rate limiting and operational controls. No real employee-password collection is proposed.
+
+## Technology and source map
+
+| Technology | Role |
+| --- | --- |
+| React / JavaScript | Components, state, events and asynchronous UI |
+| HTML / CSS | Document structure, responsive layout and themes |
+| Vite | Local server, lazy route bundling and production output |
+| Node.js / npm | Development and testing tools; locked dependency installation |
+| Web Crypto / fetch | Local hashing/randomness and controlled range requests |
+| zxcvbn 4.4.2 | Local guessability estimate; wrapper discards sensitive intermediate details |
+| Node test runner / Playwright | Core logic tests and browser interaction tests |
+
+```text
+.github/workflows/   validate.yml: PR checks; deploy.yml: main/Pages deployment
+public/_headers      Optional headers for compatible static hosts
 src/
-  components/    Reusable inputs, status, meter, navigation, flow and metric cards
-  hooks/         usePasswordSecurity: current input, request lifecycle and stale guards
-  pages/         Overview, shared account form, dashboard, architecture, privacy, policy
-  services/      HIBP client and demonstration analysis runner
-  utils/         Hashing, normalization/policy, strength wrapper and report calculations
-  data/          Public demo fixtures, generator and navigation definitions
-  tests/         Mocked core tests
-  App.jsx        Page selection and non-sensitive session activity
-  main.jsx       React entry point
-  index.css      Stylesheet entry
-  styles.css     Complete responsive design
-public/_headers  Optional static-host security headers
-e2e/            Mocked browser tests
- docs/           Beginner walkthrough, security review and presentation scripts
+  App.jsx            Hash navigation, global mock setting and session activity
+  main.jsx           React entry and stylesheet imports
+  components/        Inputs, strength/status, navigation, evidence, explanations
+  pages/             Eight navigation destinations; shared signup/reset page
+  hooks/             usePasswordSecurity.js: cancellation, freshness, stale guards
+  services/          hibpService.js, analyzeDemo.js, benchmark.js, securityLab.js
+  utils/             Hashing, policy, strength, freshness, reporting, explanations
+  data/              Navigation, public demo fixtures and synthetic generators
+  tests/             Core/unit/service tests using mock responses
+e2e/                 Playwright browser regressions
+styles (in src/)     styles.css: base; theme.css: palette; refinements.css: layout
+README.md            Current user/developer guide
+CHANGELOG.md         Historical record, newest release first
+docs/releases/       Detailed release notes and release-record template
+package.json         Scripts, package version and dependency requirements
+package-lock.json    Exact installed dependency graph
+vite.config.js       Repository base path and build/preview security settings
+playwright.config.js Local production preview and browser-test settings
 ```
 
-## Commands and tests
+`DashboardExplanation.jsx` uses the pure `explainDashboard()` helper to describe actual `summarize()` counts. It never performs a lookup or approves a password. `reportSentence()` uses source-aware wording; `parseReport()` and `compareReports()` enforce report compatibility. `securityDecision()` remains the policy gate. `checkBreachedPassword()` performs the lookup lifecycle.
+
+## Commands and testing
+
+| Command | Effect |
+| --- | --- |
+| `npm ci` | Install exactly the lockfile dependency graph |
+| `npm run dev` | Start Vite development server |
+| `npm run lint` | ESLint source checks |
+| `npm test` | Node unit/service tests |
+| `npm run build` | Standard production build into `dist/` |
+| `npm run preview` | Serve an existing production build locally |
+| `npm run test:e2e` | Browser tests; requires built output and installed Chromium |
+| `npm run test:all` | Build, unit tests, browser tests; does not include lint |
+| `npm run check` | Lint, unit tests and build; does not include browser tests |
+| `npm run build:pages` | Build for `/block-the-breached-password/` |
 
 ```bash
-npm run dev        # Development server
-npm run lint       # Code checks
-npm test           # Core tests; no real HIBP calls
-npm run build      # Build dist/ for a static HTTPS host
-npm run preview    # Inspect production build locally
-```
-
-Browser tests, after building:
-
-```bash
+npm run check
 npx playwright install chromium
 npm run test:e2e
+npm run build:pages
 ```
 
-All automated HIBP responses are mocked, including the 23% fixture report. Live failures never become approval and never automatically fall back to mock. The explicit offline mode allows only labelled mock simulations, not real authentication. Browser traces/videos/screenshots are disabled by default in the tests. Test credentials are public fixtures only.
+The browser test server uses port 4173 with strict port checking. Stop any other process using that port first. Run the standard build before browser tests, not the Pages-subpath build. The optional `BBP_CHROMIUM_PATH` variable can select an already installed browser; no machine-specific executable path is committed.
 
-The zxcvbn dictionary makes the JavaScript bundle comparatively large; Vite can display a bundle-size advisory. This does not mean the build failed. Page modules and the strength dependency are already deferred from the landing page. Moving strength evaluation to a worker is future work.
+Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
+
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.7.md) for tests actually executed.
+
+## GitHub and deployment
+
+Git tracks local changes; GitHub hosts the repository; GitHub Pages serves built static files. Hash routes such as `#dashboard` avoid a server rewrite requirement. The Vite repository base keeps asset URLs correct beneath the existing Pages subpath.
+
+The PR workflow runs Linux lint, unit tests, browser tests and a Pages build without deployment. The deployment workflow runs on a push to `main` or an explicit manual dispatch, validates the application, then uploads and publishes `dist/` to Pages. A branch push/PR alone does not publish it.
+
+In a real clone, with a clean working tree:
+
+```bash
+git status
+git switch main
+git pull --ff-only
+git switch -c upgrade-hello-world-v1.7
+```
+
+Apply the intended update, validate locally, and inspect before committing:
+
+```bash
+git diff --stat
+git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
+git diff --cached --stat
+git commit -m "Explain dashboard results and document v1.7"
+git push -u origin upgrade-hello-world-v1.7
+```
+
+If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.
+
+For a failed deployment, open Actions → failed run → failing step. Find the first real error: a Node test, browser assertion, build error or hosting error. The Ubuntu-image migration notice and zxcvbn size advisory are not themselves failures. The v1.6 hotfix corrected a font-dependent 320px overflow without weakening tests.
+
+A merged commit is not proof of publication. Confirm the deployment run succeeds for that commit, then reload Pages. The sidebar displays the application version; on mobile it is hidden, so use the successful deployment commit as the authoritative publication record.
 
 ## Troubleshooting
 
-| Problem                          | Fix                                                                                                           |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| node/npm not found               | Install Node.js 24 LTS and reopen VS Code.                                                                    |
-| package.json not found           | Open the extracted project folder itself, not its parent.                                                     |
-| Vite missing                     | Run npm install in that folder.                                                                               |
-| Old Phase 1 screen               | Stop the old server. Open this folder, restart, and use its printed URL.                                      |
-| Port already used                | Stop the old process or use the alternate URL printed by Vite.                                                |
-| Crypto unavailable               | Use Chrome on localhost/127.0.0.1 or HTTPS, not a file:// page or insecure remote HTTP address.               |
-| Check unavailable                | Confirm internet access to HIBP; wait and retry. The gate stays closed. Do not disable CORS/browser security. |
-| Submit disabled                  | Check length, common/context rule, email or confirmation, and a current no-match result.                      |
-| Reset random demo does not match | Reveal the generated test value and copy it into confirmation, or type your own test passphrase.              |
-| Dashboard stops early            | Errors are unknown. Wait, then rerun; the denominator never treats them as clear.                             |
-| Browser test executable missing  | Run npx playwright install chromium before npm run test:e2e.                                                  |
+| Symptom | What to do |
+| --- | --- |
+| `package.json` missing | Enter the project folder, not its parent |
+| Vite missing | Run `npm ci` in the project folder |
+| Old UI locally | Stop the old server, check the folder/version and use the new printed URL |
+| Crypto unavailable | Use localhost/127.0.0.1 or HTTPS; do not disable browser security |
+| Check unavailable | Wait and retry the explicit check; unavailable must remain blocked |
+| Submit disabled | Read the decision, email/confirmation, length/blocklist and freshness requirements |
+| 23% repeats | Expand dataset composition; synthetic input mix explains repeatability |
+| 0% with partial coverage | Explain coverage; unresolved inputs are not proven safe |
+| Reports cannot compare | Check source, dataset ID, policy, scenario and full coverage |
+| Print button disabled | Finish or cancel a run first; report must have a completion timestamp |
+| Mock versus live confusion | Read global mode plus dashboard/Lab source labels; Lab always mocks |
+| Browser executable missing | Run `npx playwright install chromium` |
+| `git` says not a repository | ZIP folders have no Git history; use a clone |
 
-## Screenshots
+## Release records and future work
 
-Preview: ![Overview](docs/screenshots/overview-desktop.png)
+[CHANGELOG.md](CHANGELOG.md) records additions, behavior changes, fixes, validation and known limitations. [Release notes](docs/releases/README.md) explain how to maintain that record. Historical documents retain their original claims and test counts, with historical-context notices where old behavior differs from current behavior.
 
-See `docs/screenshots/` for available previews. Replace/add these before submitting your final team deck:
+Every future release should update the package version, README status, changelog, detailed release note, validation evidence and changed-file manifest together. Policy/report versions change only when their semantics require it, not merely because the UI changes. The release process is documented; it is not an autonomous future-editing service.
 
-- Overview desktop screenshot
-- Breached signup state
-- Successful simulated signup/reset
-- Completed dashboard (label mocked results if captured with test data mocks)
-- Architecture and Network tab evidence from your live demo
+**Future work, not implemented:** production authentication integration with trusted policy enforcement; verified recovery; passkeys/MFA; maintained production blocklists; carefully scoped authorized reporting; broader assistive-technology testing; strength work off the main UI thread. None should turn the demo dashboard into an employee-password collection tool.
 
-Never include actual user passwords or full user-password hashes in screenshots.
+## Learning materials and references
 
-## Security limitations and future work
+- [Start here](docs/START-HERE.md), [code walkthrough](docs/CODE-WALKTHROUGH.md)
+- [Two-minute demo](docs/DEMO-2-MINUTES.md), [five-minute script](docs/PRESENTATION-5-MINUTES.md), [judge questions](docs/JUDGE-QA.md)
+- [Security review](docs/SECURITY-REVIEW.md)
+- [NIST SP 800-63B-4 password guidance](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#passwords)
+- [HIBP Pwned Passwords API](https://haveibeenpwned.com/API/v3#PwnedPasswords)
+- [zxcvbn source](https://github.com/dropbox/zxcvbn), [Vite documentation](https://vite.dev/guide/)
 
-The UI gate is enforceable only within the intended client flow. A user can modify frontend code, so production must enforce policy at a trusted boundary. The dashboard is a demo screen, not an authenticated administrator portal. Audit events are volatile and mutable. There is no account ownership verification, email delivery, session management, backend rate limiting or credential storage.
-
-HIBP cannot cover every breach or future exposure. NFC lookup describes the normalized value, not every historical Unicode encoding. A proxy, service compromise, malicious script or endpoint compromise can defeat aspects of the model. Network inspection supports a particular run; code review, tests and deployment controls provide additional evidence.
-
-Future work: trusted authentication integration, authenticated reset tokens, passkeys/MFA, carefully designed server-side enforcement, role-based reporting, minimal durable audit records, monitored API availability and a maintained offline breach corpus. Do not retrofit a server that blindly trusts a browser's `breached: false` assertion.
-
-## Presentation and learning materials
-
-- [Start here](docs/START-HERE.md)
-- [Beginner code walkthrough](docs/CODE-WALKTHROUGH.md)
-- [Two-minute demo](docs/DEMO-2-MINUTES.md)
-- [Five-minute presentation](docs/PRESENTATION-5-MINUTES.md)
-- [Judge questions](docs/JUDGE-QA.md)
-- [Security review and verification](docs/SECURITY-REVIEW.md)
-
-## Team
-
-- Team name: [Add your team name]
-- Members and roles: [Add names and contributions]
-- Institution: [Add institution]
-- Mentor: [Add mentor]
-- Repository/demo link: [Add after publication]
-
-## Official references
-
-- NIST final SP 800-63B-4: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#passwords
-- HIBP Pwned Passwords: https://haveibeenpwned.com/API/v3#PwnedPasswords
-- zxcvbn: https://github.com/dropbox/zxcvbn
-- Vite: https://vite.dev/guide/
-
-This is a student-built demonstration for Microsoft Innovate, not an official Microsoft or HIBP product.
-
-## Version 1.3: Security Test Lab
-
-The new **Security test lab** sidebar page runs nine local, synthetic scenarios through the shared hashing, strength, breach parser and policy engine. Test strong-but-exposed passwords and service failures, then export non-sensitive JSON evidence. This is explicitly a mock lab, not a live HIBP report or a security certification. See [upgrade guide](docs/UPGRADE-1.3.md) for the demo and installation instructions.
-
-## Version 1.5
-
-See [upgrade instructions](docs/UPGRADE-1.5-MACOS.md) and [validation](docs/VALIDATION-1.5.md). The existing detailed v1.4 learning guide is historical: v1.5 adds timestamp-based submission freshness, appearance controls, single-case Lab runs and dataset explanations. Authentication remains simulated. No employee-password collection or upload has been added.
+Team: **HELLO WORLD**. Member names, roles, institution and mentor details have not been supplied and are not invented here. This is a student-built demonstration, not an official Microsoft or HIBP product.
