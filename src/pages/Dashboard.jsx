@@ -4,6 +4,7 @@ import { POLICY } from "../utils/passwordPolicy.js";
 import { REPORT_SCHEMA } from "../utils/reporting.js";
 import { useEffect, useRef, useState } from "react";
 import PageHeading from "../components/PageHeading.jsx";
+import DashboardExplanation from "../components/DashboardExplanation.jsx";
 import DashboardCards from "../components/DashboardCards.jsx";
 import Icon from "../components/Icon.jsx";
 import { runBenchmark } from "../services/benchmark.js";
@@ -119,7 +120,7 @@ export default function Dashboard({ onAudit, offline = false }) {
       performance: metrics,
       denominator:
         "Successfully checked accounts; excludes unknown and pending",
-      report: (mockMode ? "SYNTHETIC MOCK RESULTS: " : "") + reportSentence(summary),
+      report: (mockMode ? "SYNTHETIC MOCK RESULTS: " : "") + reportSentence(summary, mockMode),
       rows,
     });
     onAudit("Aggregate report export", "Downloaded");
@@ -159,6 +160,8 @@ export default function Dashboard({ onAudit, offline = false }) {
         </p>
       </div>
       <section className="panel performance-panel" aria-label="Analysis configuration">
+        <h2>1. Choose your demonstration</h2>
+        <p className="muted">Live mode contacts HIBP only when you run the analysis. Mock mode uses a local test corpus.</p>
         <label htmlFor="analysis-mode"><strong>Analysis mode</strong></label>
         <select id="analysis-mode" value={mode} disabled={running} onChange={(event) => {
           const next = event.target.value;
@@ -210,7 +213,7 @@ export default function Dashboard({ onAudit, offline = false }) {
         <section className="panel analysis-panel">
           <div className="section-header">
             <div>
-              <h2>Run an exposure analysis</h2>
+              <h2>2. Understand your results</h2>
               <p className="muted">
                 {mockMode ? "The same hashing, parsing and matching engine, with local mock responses." : "A live check for each test account. No invented results."}
               </p>
@@ -248,9 +251,6 @@ export default function Dashboard({ onAudit, offline = false }) {
               {summary.pending} pending
             </span>
           </div>
-          <p className="analysis-explanation">
-            {mockMode ? "Fixed dataset: 230 entries repeat five mock-listed fixtures, and 770 distinct synthetic strings are absent from the mock corpus. Expected complete result: 23% mock matches. The app calculates the result using exact suffix comparison; it does not insert a preset percentage." : "The full dataset combines 23 public common-password fixtures with 77 fresh random strings. HIBP determines the outcome; the 20-account demo uses 5 common fixtures. Duplicate prefixes are reused within one run."}
-          </p>
           {(phase === "interrupted" || phase === "cancelled") && (
             <div className="notice warning" role="status">
               {phase === "cancelled"
@@ -260,12 +260,13 @@ export default function Dashboard({ onAudit, offline = false }) {
               counted as clear. Wait before running again.
             </div>
           )}
+          <DashboardExplanation summary={summary} phase={phase} mockMode={mockMode} />
           <div className="report-callout" role="status">
             <span className="small-label">{mockMode ? "SYNTHETIC MOCK REPORT" : "EXPOSURE REPORT"}</span>
             <p>
               {phase === "idle"
                 ? "Run an analysis to calculate the breach exposure rate."
-                : (mockMode ? "Mock corpus: " : "") + reportSentence(summary)}
+                : (mockMode ? "Mock corpus: " : "") + reportSentence(summary, mockMode)}
             </p>
             {finishedAt && (
               <small>Finished {new Date(finishedAt).toLocaleString()}</small>
@@ -314,12 +315,12 @@ export default function Dashboard({ onAudit, offline = false }) {
             </svg>
             <div className="donut-label">
               <strong>
-                {summary.percentage === null ? "—" : `${summary.percentage}%`}
+                {summary.tested}/{summary.total}
               </strong>
               <span>
-                of checked accounts
+                successfully checked
                 <br />
-                {mockMode ? "match the mock corpus" : "are breached"}
+                out of all test accounts
               </span>
             </div>
           </div>
@@ -430,6 +431,8 @@ export default function Dashboard({ onAudit, offline = false }) {
           </div>
         )}
       </section>
+      <details className="dashboard-details no-print">
+        <summary>Why does the percentage often repeat?</summary>
       <section className="panel dataset-composition" aria-label="Dataset composition">
         <div className="spread"><span className="eyebrow">WHAT ARE WE CHECKING?</span><span className="source-badge">{mockMode ? "LOCAL MOCK RESPONSES" : "LIVE HIBP RESPONSES"}</span></div>
         <h2>Synthetic accounts. No employee passwords.</h2>
@@ -441,6 +444,9 @@ export default function Dashboard({ onAudit, offline = false }) {
         <p className="fine-print">{mockMode ? "The normal mock run is designed to yield 230 matches out of 1,000. This is a local test corpus, not evidence of real exposure." : `With all checks successful, if only the common examples match, this dataset yields ${Math.round(composition.common / total * 100)}%. HIBP determines each result; the input mix explains why runs often have the same percentage.`}</p>
         <p className="privacy-boundary"><Icon name="lock" size={16} /> No credential upload. No employee directory. A password match does not prove a person’s account was breached.</p>
       </section>
+      </details>
+      <details className="dashboard-details no-print">
+        <summary>Technical details: requests, reuse and timing</summary>
       <section className="panel performance-panel" aria-label="Run performance">
         <h2>Run performance</h2>
         <p className="muted">{mockMode ? "Local mock measurements. No external requests. Each mock request includes a 2ms timer." : "Measured for this run. Reused results avoid another HIBP request."}</p>
@@ -458,14 +464,16 @@ export default function Dashboard({ onAudit, offline = false }) {
         </dl>
         <p className="fine-print">{mockMode ? "Mock requests stay in memory. Elapsed time includes artificial timer delays and excludes mock corpus setup." : "Requests started counts application fetch attempts, not guaranteed server arrivals."} {!mockMode && "Time includes local processing and network waits."} Reuse counts successful cache hits within this run. Failed and cancelled requests are separate from completed account checks.</p>
       </section>
+      </details>
       <section className="panel printable-report" aria-label="Printable security report">
-        <h2>HELLO WORLD · Security report</h2>
+        <h2>3. Keep your report</h2>
+        <p><strong>HELLO WORLD · Security report</strong></p>
         <p><strong>{mockMode ? "MOCK — LOCAL SYNTHETIC CORPUS" : "LIVE HIBP Pwned Passwords API"}</strong></p>
         <p>Policy: {POLICY.version} · Dataset: {datasetId.current ?? "Not run"} · Scenario: {mockMode ? scenario : "live"}</p>
         <p>Synthetic inputs: {composition.common} repeated common examples + {composition.random} {mockMode ? "other fixed synthetic values" : "fresh random values"}. No employee accounts.</p>
         <p>Timestamp: {finishedAt ?? "Not finished"} · Run status: {phase}</p>
         <p>Coverage: {summary.tested}/{summary.total} successfully checked · {summary.unknown} unknown · {summary.pending} pending.</p>
-        <p>Report finding: {mockMode ? "Synthetic mock results: " : ""}{reportSentence(summary)}</p>
+        <p>Report finding: {mockMode ? "Synthetic mock results: " : ""}{reportSentence(summary, mockMode)}</p>
         <p>Matches: {summary.breached} · No match: {summary.clear}. Denominator: successful checks only.</p>
         <h3>Recommended actions</h3>
         <p>Reject matched passwords. Retry unknown and pending checks; keep submission blocked. For no-match results, apply length and common/account-related rules. Strength is advisory. No match does not guarantee safety.</p>

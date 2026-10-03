@@ -14,12 +14,13 @@ export function summarize(rows, total) {
   };
 }
 
-export function reportSentence(summary) {
+export function reportSentence(summary, mockMode = false) {
+  const outcome = mockMode ? "match the local mock corpus" : "use a breached password";
   if (!summary.tested)
     return "No successful checks yet. Exposure rate is not available.";
   if (summary.pending || summary.unknown)
-    return `${summary.percentage}% of successfully checked test accounts use a breached password (${summary.tested}/${summary.total} checked). This report is incomplete.`;
-  return `${summary.percentage}% of test accounts use a breached password.`;
+    return `${summary.percentage}% of successfully checked test accounts ${outcome} (${summary.tested}/${summary.total} checked). This report is incomplete.`;
+  return `${summary.percentage}% of test accounts ${outcome}.`;
 }
 
 export function downloadReport(report, filename = "breach-exposure-demo-report.json") {

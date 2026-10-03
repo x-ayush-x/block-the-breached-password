@@ -175,3 +175,21 @@ input::file-selector-button { font: inherit; padding: 10px; margin-right: 12px; 
   .mobile-nav-toggle { display: none; }
   .printable-report { font-size: 12pt; }
 }
+
+/* v1.7: foreground decisions; keep explanations available on demand. */
+[aria-label="Analysis configuration"] > .muted { margin: 8px 0 24px; }
+.dashboard-explanation { margin: 24px 0; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
+.dashboard-explanation p { font-size: 14px; margin: 12px 0; }
+.dashboard-explanation .calculation { font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text); }
+.result-help summary, .dashboard-details > summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-size: 14px; font-weight: 650; color: var(--text); }
+.result-help { border-top: 1px solid var(--line); margin-top: 16px; }
+.result-help dl { margin: 12px 0; }
+.result-help dl > div { margin-bottom: 14px; }
+.result-help dt { font-weight: 650; font-size: 14px; }
+.result-help dd { margin: 4px 0; font-size: 14px; color: var(--muted); }
+.source-reminder { color: var(--warning); }
+.dashboard-details { margin: 16px 0; padding: 8px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.dashboard-details > section { padding: 16px 0; margin: 0; border: 0; box-shadow: none; }
+.dashboard-details + .printable-report { margin-top: 24px; }
+.donut-label strong { font-size: clamp(22px, 2.2vw, 29px); }
+@media (max-width: 700px) { .dashboard-details { padding: 6px 18px; } .dashboard-explanation { padding: 16px; } }

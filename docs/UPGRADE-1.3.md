@@ -1,3 +1,5 @@
+> Historical release notes. These describe this version at release time. Current behavior, including explicit offline signup/reset mode added in v1.4, is documented in [the README](../README.md).
+
 # Version 1.3 — Security Test Lab
 
 ## What changed
