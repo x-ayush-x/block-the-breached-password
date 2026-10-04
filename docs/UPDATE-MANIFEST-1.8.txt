@@ -1,0 +1,27 @@
+HELLO WORLD v1.8 update-only manifest
+Baseline: v1.7. Copy these files over that release; no deletions required.
+
+CHANGELOG.md
+README.md
+docs/UPDATE-MANIFEST-1.8.txt
+docs/UPGRADE-1.8-MACOS.md
+docs/releases/1.8.md
+docs/releases/README.md
+docs/screenshots/v1.8/README.md
+docs/screenshots/v1.8/dashboard-dark.png
+docs/screenshots/v1.8/dashboard-light.png
+docs/screenshots/v1.8/guide-dark.png
+docs/screenshots/v1.8/guide-phone.png
+e2e/upgrade.spec.js
+e2e/upgrade15.spec.js
+e2e/upgrade16.spec.js
+e2e/upgrade17.spec.js
+e2e/upgrade18.spec.js
+package-lock.json
+package.json
+src/App.jsx
+src/components/DemoGuide.css
+src/components/DemoGuide.jsx
+src/components/Navbar.jsx
+src/pages/SecurityLab.jsx
+vite.config.js

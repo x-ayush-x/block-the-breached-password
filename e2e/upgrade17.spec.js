@@ -25,7 +25,7 @@ test('complete mock explanation, JSON and print agree without live-breach claims
   let requests = 0;
   await page.route('https://api.pwnedpasswords.com/**', route => { requests++; return route.abort(); });
   await page.goto('/#dashboard');
-  await page.getByLabel('Offline demonstration mode').check();
+  await page.getByLabel('Check source', { exact: true }).selectOption('practice');
   await page.getByRole('button', { name: 'Run analysis', exact: true }).click();
   const explanation = page.getByRole('region', { name: 'Understand this result' });
   await expect(explanation).toContainText('230 mock matches ÷ 1000 successful checks × 100 = 23%', { timeout: 20000 });

@@ -36,7 +36,7 @@ test('dashboard explains 100 and 20 input mixes without claiming employee access
   await expect(mix.getByText('5', { exact: true })).toBeVisible();
   await expect(mix.getByText('15', { exact: true })).toBeVisible();
   await expect(mix.getByText(/yields 25%/)).toBeVisible();
-  await page.getByLabel('Offline demonstration mode').check();
+  await page.getByLabel('Check source', { exact: true }).selectOption('practice');
   await page.getByText('Why does the percentage often repeat?', { exact: true }).click();
   await expect(mix.getByText('230', { exact: true })).toBeVisible();
   await expect(mix.getByText('LOCAL MOCK RESPONSES', { exact: true })).toBeVisible();

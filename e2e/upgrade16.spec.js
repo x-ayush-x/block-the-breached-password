@@ -54,7 +54,7 @@ test('dashboard empty filter is explained and configuration clears dataset ident
 
 test('mock filters and chart announce their actual source', async ({ page }) => {
   await page.goto('/#dashboard');
-  await page.getByLabel('Offline demonstration mode').check();
+  await page.getByLabel('Check source', { exact: true }).selectOption('practice');
   await expect(page.getByLabel('Filter account results').locator('option[value="breached"]')).toHaveText('Mock match');
   await expect(page.getByRole('img', { name: /mock matches/ })).toBeVisible();
 });
