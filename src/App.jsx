@@ -10,6 +10,8 @@ const Privacy = lazy(() => import("./pages/Privacy.jsx"));
 const SecurityLab = lazy(() => import("./pages/SecurityLab.jsx"));
 const Policy = lazy(() => import("./pages/Policy.jsx"));
 
+import { version } from "../package.json";
+import { POLICY } from "./utils/passwordPolicy.js";
 import ThemeControl from "./components/ThemeControl.jsx";
 import DemoGuide from "./components/DemoGuide.jsx";
 
@@ -87,7 +89,7 @@ export default function App() {
           </div>
         </header>
         <main id="main-content" ref={main} tabIndex={-1}>
-          <DemoGuide offline={offline} setOffline={setOffline} />
+          <DemoGuide page={page} offline={offline} setOffline={setOffline} />
           <Suspense key={page} fallback={<p role="status">Loading page…</p>}>{pages[page]}</Suspense>
         </main>
         <footer className="site-footer">
@@ -97,6 +99,7 @@ export default function App() {
           </span>
           <span>Client-side prototype · Authentication simulated</span>
           <a href="#privacy">Privacy & limitations</a>
+          <span className="release-info">v{version} · Policy {POLICY.version} · Build {import.meta.env.APP_BUILD_ID}</span>
         </footer>
       </div>
     </div>

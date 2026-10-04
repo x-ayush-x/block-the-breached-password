@@ -2,6 +2,28 @@
 
 Changes are recorded newest first. Application versions and password-policy versions are separate. Historical entries below were reconstructed from the existing source, upgrade guides and validation notes; unknown dates and test results are not invented. A local release does not mean GitHub Pages has deployed it.
 
+## 1.8.0 — 2026-10-04
+
+### Added
+- Compact Check source selector and page-specific source descriptions.
+- Optional five-step presentation guide with Do this / Explain this instructions, direct destination links and keyboard Escape/focus restoration.
+- On-demand browser readiness and challenge-to-feature checklist.
+- App/policy/build information in the footer; GitHub SHA prefix at build time, `local` otherwise.
+- Browser regressions for readiness without requests, guide controls, narrow layouts and mode switching during a live request.
+
+### Changed / fixed
+- Replaced the oversized offline checkbox banner. Practice stays explicitly labelled mock; the Lab never implies live checking.
+- Corrected the privacy walkthrough destination to signup so the user can inspect current lookup evidence.
+- Source changes warn that forms/results clear; switching never initiates a lookup.
+- Existing browser tests now use the source selector. Numeric policy, report schema and security transport unchanged.
+
+### Removed
+- Old banner UI and ambiguous combined walkthrough/readiness disclosure. Their capabilities remain in the compact controls and optional guide.
+
+### Validation / limitations
+- See [v1.8 release notes](docs/releases/1.8.md) for executed checks and remaining limits.
+- Readiness does not contact HIBP. Guide steps are instructions, not verified test results. Authentication remains simulated. No automatic deployment.
+
 ## 1.7.0 — 2026-10-04
 
 ### Added

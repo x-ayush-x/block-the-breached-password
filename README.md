@@ -8,7 +8,7 @@ HELLO WORLD is our hackathon team and application name. The repository remains `
 
 | Project status | Current implementation |
 | --- | --- |
-| Application version | **1.7.0** |
+| Application version | **1.8.0** |
 | Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
 | Authentication | Simulated; no real accounts, login sessions or reset emails |
 | Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
@@ -23,7 +23,7 @@ The Pages address is the configured publication location. Its deployed version d
 ## Contents
 
 1. [Problem and scope](#problem-and-scope)
-2. [What is new in v1.7](#what-is-new-in-v17)
+2. [What is new in v1.8](#what-is-new-in-v18)
 3. [Run on macOS](#run-on-macos)
 4. [Every page](#every-page)
 5. [A first demonstration](#a-first-demonstration)
@@ -50,17 +50,17 @@ A match means the proposed password value appears in the checked corpus. It does
 
 The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
 
-## What is new in v1.7
+## What is new in v1.8
 
-- Dashboard organized around **choose a demonstration → understand results → keep a report**.
-- Actual count-based formula explains the match rate, alongside successful coverage and next steps.
-- The ring's center shows successfully checked accounts out of all accounts; the rate card retains the successful-check denominator. These denominators are explicitly distinguished.
-- Expandable definitions explain match, no match, unknown and pending. Technical request counters and dataset composition remain available without dominating the initial screen.
-- Mock report sentences say **match the local mock corpus**, avoiding language that implies a real breach finding.
-- Rebuilt README, consolidated historical changelog and a repeatable release-notes process.
-- Includes the v1.6 Linux narrow-screen hotfix and pull-request validation workflow.
+- Replaced the large offline-mode banner with a compact **Check source** selector: **Live HIBP** or **Practice · mock data**.
+- Source guidance reflects the current page: signup/reset, separately configured dashboard, or always-mocked Lab.
+- An optional **Demo guide** offers five selectable steps with concrete actions and expected explanations. It never runs checks automatically or marks steps as verified.
+- Privacy demonstration stays on signup so current evidence is not lost by navigating away. Practice instructions explicitly say no live evidence exists.
+- Readiness checks and challenge mapping are available on demand, not spread across every page.
+- Footer shows app version, policy and build identifier on phones and desktop. GitHub builds use the first 12 characters of `GITHUB_SHA`; ordinary local builds say `local`. This identifies a build, not a signature or security attestation.
+- Source switching retains cancellation, input/result clearing and fail-closed behavior. No automatic mock fallback was added.
 
-See [v1.7 release notes](docs/releases/1.7.md) for exact scope, migration, validation and limitations. Historical test counts belong to their original releases, not the current application.
+See [v1.8 release notes](docs/releases/1.8.md) and [the changelog](CHANGELOG.md). v1.7's dashboard calculations and reporting improvements remain intact.
 
 ## Run on macOS
 
@@ -97,7 +97,7 @@ npm run dev
 
 `npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-If using an update-only ZIP, follow [v1.7 update instructions](docs/UPGRADE-1.7-MACOS.md). An extracted ZIP is not a Git repository.
+If using an update-only ZIP, follow [v1.8 update instructions](docs/UPGRADE-1.8-MACOS.md). An extracted ZIP is not a Git repository.
 
 ### Preview a production build
 
@@ -123,7 +123,7 @@ The production files are written to `dist/`. Preview serves them locally. For th
 
 Appearance offers System, Light and Dark. The selection stays in memory and resets on reload. On a phone, **Explore pages** opens all routes; Escape closes it and restores focus. The skip link moves keyboard focus into the main content. Route changes cancel active checks and discard page-local results.
 
-The shared walkthrough links signup, rejection, privacy evidence, dashboard and Lab. Readiness checks detect a secure context, Web Crypto and a browser network hint; they do not establish HIBP availability.
+Open **Demo guide** to follow five steps: rejection, a different password, signup privacy evidence, dashboard and Lab. The guide is optional and its selected step is not proof of successful execution. Choose **Practice · mock data** explicitly for offline simulations; changing source clears signup/reset/dashboard inputs and results. Readiness checks detect a secure context, Web Crypto and a browser network hint; they do not establish HIBP availability.
 
 ## A first demonstration
 
@@ -317,7 +317,7 @@ The browser test server uses port 4173 with strict port checking. Stop any other
 
 Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
 
-The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.7.md) for tests actually executed.
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.8.md) for tests actually executed.
 
 ## GitHub and deployment
 
@@ -331,7 +331,7 @@ In a real clone, with a clean working tree:
 git status
 git switch main
 git pull --ff-only
-git switch -c upgrade-hello-world-v1.7
+git switch -c upgrade-hello-world-v1.8
 ```
 
 Apply the intended update, validate locally, and inspect before committing:
@@ -340,15 +340,15 @@ Apply the intended update, validate locally, and inspect before committing:
 git diff --stat
 git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
 git diff --cached --stat
-git commit -m "Explain dashboard results and document v1.7"
-git push -u origin upgrade-hello-world-v1.7
+git commit -m "Make the HELLO WORLD v1.8 demo guide usable"
+git push -u origin upgrade-hello-world-v1.8
 ```
 
 If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.
 
 For a failed deployment, open Actions → failed run → failing step. Find the first real error: a Node test, browser assertion, build error or hosting error. The Ubuntu-image migration notice and zxcvbn size advisory are not themselves failures. The v1.6 hotfix corrected a font-dependent 320px overflow without weakening tests.
 
-A merged commit is not proof of publication. Confirm the deployment run succeeds for that commit, then reload Pages. The sidebar displays the application version; on mobile it is hidden, so use the successful deployment commit as the authoritative publication record.
+A merged commit is not proof of publication. Confirm the deployment run succeeds for that commit, then reload Pages. The footer shows application/policy versions and a build ID on all screen sizes. Compare the build ID with the successful deployment commit; local builds show `local`.
 
 ## Troubleshooting
 

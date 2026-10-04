@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 const productionCSP =
   "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://api.pwnedpasswords.com; object-src 'none'; base-uri 'none'; form-action 'none'";
 export default defineConfig(({ command, mode }) => ({
+  define: { "import.meta.env.APP_BUILD_ID": JSON.stringify(process.env.GITHUB_SHA?.slice(0, 12) || "local") },
   base: mode === "github-pages" ? "/block-the-breached-password/" : "/",
   plugins: [
     react(),

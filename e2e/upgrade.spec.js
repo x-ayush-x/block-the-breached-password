@@ -10,10 +10,11 @@ test('home defers strength bundle; skip link and walkthrough work by keyboard', 
   await expect(page.getByText('Skip to content')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('main')).toBeFocused();
-  await page.getByText('Guided hackathon walkthrough & readiness').click();
+  await page.getByRole('button', { name: 'Demo guide', exact: true }).click();
+  await page.getByText('Before presenting: check this browser', { exact: true }).click();
   await page.getByRole('button', { name: 'Check demo readiness' }).click();
   await expect(page.getByText('Browser cryptography: ready')).toBeVisible();
-  await page.getByRole('link', { name: 'Open this step' }).click();
+  await page.getByRole('link', { name: 'Open signup', exact: true }).click();
   await expect(page.getByLabel('Password', { exact: true })).toBeVisible();
 });
 
@@ -21,14 +22,14 @@ test('offline signup labels mock verdict, sends nothing and mode change clears i
   let external = 0;
   await page.route('https://api.pwnedpasswords.com/**', route => { external++; return route.abort(); });
   await page.goto('/#signup');
-  await page.getByLabel('Offline demonstration mode').check();
+  await page.getByLabel('Check source', { exact: true }).selectOption('practice');
   await page.getByRole('button', { name: 'Load breached demo' }).click();
   await page.getByRole('button', { name: 'Check password securely' }).click();
   await expect(page.getByText('Mock corpus match', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Simulate account creation' })).toBeDisabled();
   await expect(page.getByText('Decision complete', { exact: true })).toBeVisible();
   expect(external).toBe(0);
-  await page.getByLabel('Offline demonstration mode').uncheck();
+  await page.getByLabel('Check source', { exact: true }).selectOption('live');
   await expect(page.getByLabel('Password', { exact: true })).toHaveValue('');
   await expect(page.getByText('Not checked', { exact: true })).toBeVisible();
 });
@@ -49,7 +50,7 @@ test('explicit cancellation keeps signup closed after a late response', async ({
 
 test('mock export roundtrip, compatibility checks and print coverage', async ({ page }) => {
   await page.goto('/#dashboard');
-  await page.getByLabel('Offline demonstration mode').check();
+  await page.getByLabel('Check source', { exact: true }).selectOption('practice');
   await page.getByRole('button', { name: 'Run analysis', exact: true }).click();
   await expect(page.getByText('1000 of 1000 processed')).toBeVisible({ timeout: 20000 });
   const download = page.waitForEvent('download');
