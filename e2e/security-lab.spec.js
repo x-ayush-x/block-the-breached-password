@@ -4,11 +4,12 @@ test('lab runs offline, explains rejection and exports only non-sensitive eviden
   const external = [];
   await page.route('https://api.pwnedpasswords.com/**', route => { external.push(route.request().url()); return route.abort(); });
   await page.goto('/#lab');
-  await expect(page.getByRole('heading', { name: 'Show the decision. Test the failure.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Would our checker make the right decision?' })).toBeVisible();
   await page.getByRole('button', { name: 'Run security tests', exact: true }).click();
   await expect(page.getByText('9 of 9 completed · 9 passed · complete.', { exact: true })).toBeVisible();
   expect(external).toEqual([]);
   const card = page.locator('.lab-card').filter({ has: page.getByRole('heading', { name: 'Strong, but already exposed' }) });
+  await card.getByText('Under the hood: what was checked?', { exact: true }).click();
   await expect(card.getByText('Strong', { exact: true })).toBeVisible();
   await expect(card.getByText('Block submission', { exact: true })).toHaveCount(2);
   const download = page.waitForEvent('download');

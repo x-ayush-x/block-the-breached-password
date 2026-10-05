@@ -4,6 +4,7 @@ Use [README.md](../../README.md) for current behavior and [CHANGELOG.md](../../C
 
 ## Current detailed notes
 
+- [1.9](1.9.md): focused Security Test Lab and clear result explanations.
 - [1.8](1.8.md): compact source controls and actionable demo guide.
 - [1.7](1.7.md): dashboard explanations and documentation overhaul.
 - [Template](TEMPLATE.md): copy for each future release.

@@ -17,3 +17,35 @@
 .lab-card .lab-reason { background: var(--surface-soft); padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 0; }
 @media (max-width: 1200px) { .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .lab-summary, .lab-grid, .lab-control { grid-template-columns: 1fr; } .lab-actions .button { width: 100%; } }
+
+/* v1.9: one scenario at a time, with optional technical evidence. */
+.lab-start { display: grid; grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); gap: 28px; margin: 24px 0; align-items: center; }
+.lab-start h2 { margin: 10px 0; }
+.lab-start p, .lab-picker > p, .lab-control p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.lab-example { display: grid; gap: 10px; padding: 20px; background: var(--surface-soft); border-radius: 12px; font-size: 14px; }
+.lab-example span { display: flex; justify-content: space-between; gap: 16px; }
+.lab-workbench { display: grid; grid-template-columns: minmax(290px, 0.9fr) minmax(0, 1.4fr); gap: 24px; align-items: start; }
+.lab-picker h2 { font-size: 21px; margin: 12px 0; }
+.lab-picker ol { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 6px; }
+.lab-picker button { width: 100%; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: left; padding: 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text); font: inherit; font-size: 13px; min-height: 52px; cursor: pointer; }
+.lab-picker button:hover { background: var(--surface-soft); }
+.lab-picker button[aria-pressed="true"] { border-color: var(--blue); background: var(--surface-soft); }
+.lab-number { color: var(--muted); font-size: 12px; }
+.lab-detail h2 { font-size: 25px; margin: 12px 0; }
+.lab-detail .lab-question { font-size: 16px; line-height: 1.7; }
+.lab-setup { padding: 16px 18px; border-left: 3px solid var(--blue); background: var(--surface-soft); margin: 24px 0; border-radius: 0 10px 10px 0; }
+.lab-setup h3, .lab-outcome h3 { font-size: 15px; margin: 0 0 8px; }
+.lab-setup p, .lab-outcome p { font-size: 14px; line-height: 1.7; margin: 0; }
+.lab-decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+.lab-decision-grid span { color: var(--muted); font-size: 12px; }
+.lab-decision-grid strong { display: block; font-size: 17px; margin-top: 8px; }
+.lab-outcome { padding: 18px; border: 1px solid currentColor; border-radius: 12px; margin-top: 20px; }
+.lab-outcome p { color: var(--text); }
+.lab-technical { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 12px; }
+.lab-technical summary, .lab-evidence summary { padding: 10px 0; min-height: 44px; font-size: 14px; font-weight: 650; cursor: pointer; }
+.lab-technical p, .lab-evidence p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.lab-control progress { width: 100%; }
+@media (max-width: 1000px) { .lab-workbench, .lab-start { grid-template-columns: 1fr; } }
+@media (max-width: 400px) { .lab-decision-grid { grid-template-columns: 1fr; } .lab-picker button { gap: 6px; padding: 10px 6px; } .lab-verdict { padding: 5px; font-size: 10px; } }
+.lab-outcome.good, .lab-example .good { color: var(--success); }
+.lab-outcome.bad { color: var(--danger); }

@@ -2,6 +2,28 @@
 
 Changes are recorded newest first. Application versions and password-policy versions are separate. Historical entries below were reconstructed from the existing source, upgrade guides and validation notes; unknown dates and test results are not invented. A local release does not mean GitHub Pages has deployed it.
 
+## 1.9.0 — 2026-10-05
+
+### Added
+- One-scenario Lab workspace with selectable situations, expected/actual decisions and specific explanations of correct rejection or permission.
+- Expandable technical evidence and explicit export scope, failures and unfinished counts.
+- Browser regression coverage for result browsing, export scope, cancellation and 320px explanations.
+
+### Changed
+- Replaced nine dense Lab cards with a compact scenario list and one focused detail panel.
+- Kept all nine shared-engine scenarios, full-suite runs, cancellation and allowlisted JSON exports.
+- Updated README, release documentation and application version labels.
+
+### Fixed
+- Lab evidence reports now derive their application version from package.json instead of claiming version 1.5.0.
+
+### Removed
+- The redundant three-card Lab summary; run progress and export scope now carry this information. No scenario or checking capability removed.
+
+### Security and validation
+- Lab remains local mock only. HIBP transport, hashing, policy, source switching and Pages configuration unchanged; no new dependencies or storage.
+- [Executed checks and limitations](docs/releases/1.9.md). Published to a release branch for review; no merge or deployment by this update.
+
 ## 1.8.0 — 2026-10-04
 
 ### Added

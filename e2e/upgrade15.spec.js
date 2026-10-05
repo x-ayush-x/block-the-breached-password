@@ -65,7 +65,7 @@ test('one lab scenario reports one test, exports honest scope and makes no netwo
   await page.goto('/#lab');
   await page.getByRole('button', { name: 'Run scenario: Strong, but already exposed', exact: true }).click();
   await expect(page.getByText('1 of 1 completed · 1 passed · complete.', { exact: true })).toBeVisible();
-  await expect(page.getByText('PASS: the expected rejection and all scenario checks matched.', { exact: true })).toBeVisible();
+  await expect(page.getByText('PASS · Correct rejection', { exact: true })).toBeVisible();
   await expect(page.getByText('NOT RUN', { exact: true })).toHaveCount(8);
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export evidence' }).click();
