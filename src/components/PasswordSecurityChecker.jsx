@@ -39,19 +39,7 @@ export default function PasswordSecurityChecker({
         <span>{policy.length ?? "Too many"} characters</span>
       </div>
       <StrengthMeter strength={strength} />
-      <div className="rule-list">
-        <p className={policy.lengthOK ? "met" : ""}>
-          <Icon name={policy.lengthOK ? "check" : "info"} size={15} />
-          At least 15 characters, at most 128
-        </p>
-        <p className={password && !policy.blocked ? "met" : ""}>
-          <Icon
-            name={password && !policy.blocked ? "check" : "info"}
-            size={15}
-          />
-          Not a common or account-related whole password
-        </p>
-      </div>
+      <p className="fine-print">Strength is advice about guessability. It is not a submission rule and never overrides a breach match.</p>
       <button
         type="button"
         className="button secondary check-button"
@@ -63,19 +51,12 @@ export default function PasswordSecurityChecker({
         <Icon name="arrow" size={17} />
       </button>
       {breach.status === "checking" && <button type="button" className="button secondary" onClick={security.cancel}>Cancel check</button>}
-      <section className="decision-breakdown" aria-label="Live decision breakdown">
-        <h3>Live decision breakdown</h3>
-        <ul>
-          <li>Length: {!password ? "Awaiting input" : policy.lengthOK ? "Pass" : "Blocked — use 15–128 characters"}</li>
-          <li>Common/account-related values: {!password ? "Awaiting input" : policy.blocked ? "Blocked — choose a different whole value" : "Pass — local list only"}</li>
-          <li>Strength: {strength.label} — advisory; never overrides a breach match.</li>
-          <li>Breach: {{ idle: "Not checked", checking: "Checking", clear: "No match", breached: "Match found — blocked", error: "Unavailable — blocked", expired: "Expired — check again" }[breach.status]}{security.offline ? " (MOCK ONLY)" : " (live HIBP)"}</li>
-        </ul>
-        <p>Processing stages · {security.offline ? "local mock transport" : "live transport"}</p>
-        {!security.stages.length && <p className="muted">Stages appear when you select “Check password securely”.</p>}
+      <details className="check-processing">
+        <summary>See actual processing stages</summary>
+        <p>{security.offline ? "Local mock transport — no HIBP request" : "Live HIBP transport"}. These stages come from the checker, not a simulated progress timer.</p>
+        {!security.stages.length && <p>Stages appear when you select “Check password securely”.</p>}
         <ol aria-live="polite" aria-relevant="additions">{security.stages.map((stage, i) => <li key={i}>{stage}</li>)}</ol>
-        {breach.status === "error" && <p role="status">Check failed. Submission remains blocked.</p>}
-      </section>
+      </details>
       {security.offline && <p role="status"><strong>OFFLINE DEMONSTRATION — synthetic mock corpus, no HIBP requests. “Not found” below means no mock match only.</strong></p>}
       <BreachStatus breach={breach} offline={security.offline} />
       {!security.offline && <PrivacyEvidence evidence={security.evidence} />}

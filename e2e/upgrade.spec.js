@@ -27,6 +27,7 @@ test('offline signup labels mock verdict, sends nothing and mode change clears i
   await page.getByRole('button', { name: 'Check password securely' }).click();
   await expect(page.getByText('Mock corpus match', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Simulate account creation' })).toBeDisabled();
+  await page.getByText('See actual processing stages', { exact: true }).click();
   await expect(page.getByText('Decision complete', { exact: true })).toBeVisible();
   expect(external).toBe(0);
   await page.getByLabel('Check source', { exact: true }).selectOption('live');
@@ -44,6 +45,7 @@ test('explicit cancellation keeps signup closed after a late response', async ({
   await page.getByRole('button', { name: 'Check password securely' }).click();
   await page.getByRole('button', { name: 'Cancel check' }).click();
   release();
+  await page.getByText('See actual processing stages', { exact: true }).click();
   await expect(page.getByText('Cancelled — submission blocked')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Simulate account creation' })).toBeDisabled();
 });

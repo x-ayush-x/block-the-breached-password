@@ -50,5 +50,5 @@ test('guide fits phones in both themes and source copy respects page-specific mo
   await page.getByRole('button', { name: '4 Explain the report' }).click();
   await page.getByRole('link', { name: 'Open dashboard', exact: true }).click();
   await expect(page.locator('#source-scope')).toHaveText('Choose this dashboard’s source below.');
-  await expect(page.locator('.release-info')).toHaveText(/v1\.9\.0 · Policy hello-world-1\.5 · Build (local|[a-f0-9]{12})$/);
+  await expect(page.locator('.release-info')).toHaveText(/v1\.10\.0 · Policy hello-world-1\.5 · Build (local|[a-f0-9]{12})$/);
 });

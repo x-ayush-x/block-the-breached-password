@@ -29,7 +29,7 @@ test('reset with invalid optional email explains why submission is blocked', asy
   await page.getByRole('button', { name: 'Check password securely' }).click();
   const submit = page.getByRole('button', { name: 'Simulate password reset' });
   await expect(submit).toBeDisabled();
-  await expect(page.getByText(/Enter a valid email address or clear the optional field/)).toBeVisible();
+  await expect(page.locator('#submission-next-step').getByText(/Enter a valid email address or clear the optional field/)).toBeVisible();
   await page.getByLabel('Email address').fill('');
   await expect(submit).toBeEnabled();
   await submit.click();

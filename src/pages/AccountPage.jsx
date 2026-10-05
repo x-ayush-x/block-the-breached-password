@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PageHeading from "../components/PageHeading.jsx";
 import PasswordSecurityChecker from "../components/PasswordSecurityChecker.jsx";
+import SubmissionChecklist from "../components/SubmissionChecklist.jsx";
 import PasswordInput from "../components/PasswordInput.jsx";
 import Icon from "../components/Icon.jsx";
 import usePasswordSecurity from "../hooks/usePasswordSecurity.js";
@@ -161,14 +162,12 @@ export default function AccountPage({ reset = false, onAudit, offline = false })
                   </p>
                 </>
               )}
-              <div className="decision-note" role="status">
-                <Icon name={decision.allowed ? "check" : "info"} size={16} />
-                <p>{decision.reason}{decision.allowed && !contextOK && (reset ? " Enter a valid email address or clear the optional field." : " Enter a valid email address to continue.")}{decision.allowed && reset && !matches && " Confirm the same password to continue."}</p>
-              </div>
+              <SubmissionChecklist policy={policy} breach={security.breach} hasPassword={!!security.password} contextOK={contextOK} reset={reset} matches={matches} ready={ready} offline={offline} />
               <button
                 type="submit"
                 className="button primary full"
                 disabled={!ready}
+                aria-describedby="submission-next-step"
               >
                 {reset
                   ? "Simulate password reset"
