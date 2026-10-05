@@ -2,6 +2,28 @@
 
 Changes are recorded newest first. Application versions and password-policy versions are separate. Historical entries below were reconstructed from the existing source, upgrade guides and validation notes; unknown dates and test results are not invented. A local release does not mean GitHub Pages has deployed it.
 
+## 1.10.0 — 2026-10-05
+
+### Added
+- Whole-form signup/reset checklist with explicit requirement states and next-action guidance.
+- Browser coverage for email/confirmation blockers, input-edit invalidation, service failures and phone-sized mock guidance.
+
+### Changed
+- Strength clearly labelled advisory; it is not a submission gate.
+- Actual processing stages moved into an expandable disclosure.
+- Submission button linked to next-action guidance for assistive technology.
+- README, release notes, version labels and macOS migration guide updated.
+
+### Fixed
+- Removed misleading whole-form readiness wording when a password passes but email or confirmation still blocks submission.
+
+### Removed
+- Duplicate local-rule list and verbose decision breakdown, replaced by the consolidated checklist. No checking or evidence capability removed.
+
+### Security and validation
+- No new storage, requests, dependencies or authentication features. Existing policy, HIBP transport, cancellation, expiry and stale-response protections preserved.
+- [Executed validation and limitations](docs/releases/1.10.md). Published to a release branch for review; no merge or deployment by this update.
+
 ## 1.9.0 — 2026-10-05
 
 ### Added

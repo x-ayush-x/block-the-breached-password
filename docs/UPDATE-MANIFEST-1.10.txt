@@ -1,0 +1,26 @@
+HELLO WORLD v1.10 update-only manifest
+Baseline: v1.9. Overwrite listed files; no deletions required.
+
+CHANGELOG.md
+README.md
+docs/UPDATE-MANIFEST-1.10.txt
+docs/UPGRADE-1.10-MACOS.md
+docs/releases/1.10.md
+docs/releases/README.md
+docs/screenshots/v1.10/README.md
+docs/screenshots/v1.10/checklist-phone.png
+docs/screenshots/v1.10/signup-dark.png
+docs/screenshots/v1.10/signup-light.png
+e2e/upgrade.spec.js
+e2e/upgrade110.spec.js
+e2e/upgrade16.spec.js
+e2e/upgrade18.spec.js
+e2e/upgrade19.spec.js
+package-lock.json
+package.json
+src/components/Navbar.jsx
+src/components/PasswordSecurityChecker.jsx
+src/components/SubmissionChecklist.css
+src/components/SubmissionChecklist.jsx
+src/pages/AccountPage.jsx
+src/pages/SecurityLab.jsx

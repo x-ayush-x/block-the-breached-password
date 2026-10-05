@@ -8,7 +8,7 @@ HELLO WORLD is our hackathon team and application name. The repository remains `
 
 | Project status | Current implementation |
 | --- | --- |
-| Application version | **1.9.0** |
+| Application version | **1.10.0** |
 | Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
 | Authentication | Simulated; no real accounts, login sessions or reset emails |
 | Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
@@ -23,7 +23,7 @@ The Pages address is the configured publication location. Its deployed version d
 ## Contents
 
 1. [Problem and scope](#problem-and-scope)
-2. [What is new in v1.9](#what-is-new-in-v19)
+2. [What is new in v1.10](#what-is-new-in-v110)
 3. [Run on macOS](#run-on-macos)
 4. [Every page](#every-page)
 5. [A first demonstration](#a-first-demonstration)
@@ -50,18 +50,18 @@ A match means the proposed password value appears in the checked corpus. It does
 
 The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
 
-## What is new in v1.9
+## What is new in v1.10
 
-The Security Test Lab now teaches one scenario at a time instead of presenting nine dense result cards.
+Signup and reset now explain the whole form through one **What is needed to continue?** checklist.
 
-- **Choose a situation:** nine compact scenario buttons retain their latest run status. Start with “Strong, but already exposed.”
-- **Run and understand:** the selected scenario explains the pretend response, expected decision and actual engine decision. Before running, the actual decision says “Not tested yet.”
-- **A useful verdict:** PASS explicitly means correct rejection or correct permission, with a scenario-specific explanation. It never means a password is guaranteed safe.
-- **Optional technical details:** strength, local policy, mock breach result, request-argument checks and service error codes are behind a disclosure.
-- **Preserved full suite:** run all nine, cancel, browse completed results and export evidence. Selecting another scenario does not change export scope; starting a new run replaces previous evidence.
-- **Correct export version:** Lab reports use the application version from package.json instead of the old hard-coded 1.5.0 value.
+- Length, local common/account-related values, breach result, email context and reset confirmation have explicit Met / Needs attention / Pending states.
+- **What to do next** explains the next action. A successful password check no longer implies the whole form is ready while email or confirmation still blocks it.
+- Strength remains advisory and is explicitly labelled as such. It cannot override a breach match.
+- Real processing stages remain available through **See actual processing stages**. The disclosure replaces the duplicated rule and decision lists; it never invents progress.
+- The submission button is associated with its guidance for assistive technology.
+- Live and mock results stay distinct. Explicit checks, cancellation, expiry and submit-time freshness safeguards are preserved.
 
-The Lab always uses local mock responses. Existing HIBP checks, policy, dashboard reporting, source controls and light/dark themes are preserved. See [v1.9 release notes](docs/releases/1.9.md) and [the changelog](CHANGELOG.md).
+The focused Lab from v1.9, dashboard reports and demonstration controls remain available. See [v1.10 release notes](docs/releases/1.10.md) and [the changelog](CHANGELOG.md).
 
 ## Run on macOS
 
@@ -98,7 +98,7 @@ npm run dev
 
 `npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-If using an update-only ZIP, follow [v1.9 update instructions](docs/UPGRADE-1.9-MACOS.md). An extracted ZIP is not a Git repository.
+If using an update-only ZIP, follow [v1.10 update instructions](docs/UPGRADE-1.10-MACOS.md). An extracted ZIP is not a Git repository.
 
 ### Preview a production build
 
@@ -318,7 +318,7 @@ The browser test server uses port 4173 with strict port checking. Stop any other
 
 Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
 
-The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.9.md) for tests actually executed.
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.10.md) for tests actually executed.
 
 ## GitHub and deployment
 
@@ -332,7 +332,7 @@ In a real clone, with a clean working tree:
 git status
 git switch main
 git pull --ff-only
-git switch -c upgrade-hello-world-v1.9
+git switch -c upgrade-hello-world-v1.10
 ```
 
 Apply the intended update, validate locally, and inspect before committing:
@@ -341,8 +341,8 @@ Apply the intended update, validate locally, and inspect before committing:
 git diff --stat
 git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
 git diff --cached --stat
-git commit -m "Simplify the HELLO WORLD v1.9 Security Test Lab"
-git push -u origin upgrade-hello-world-v1.9
+git commit -m "Clarify HELLO WORLD v1.10 signup and reset decisions"
+git push -u origin upgrade-hello-world-v1.10
 ```
 
 If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.
