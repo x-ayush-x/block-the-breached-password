@@ -8,7 +8,7 @@ HELLO WORLD is our hackathon team and application name. The repository remains `
 
 | Project status | Current implementation |
 | --- | --- |
-| Application version | **1.8.0** |
+| Application version | **1.9.0** |
 | Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
 | Authentication | Simulated; no real accounts, login sessions or reset emails |
 | Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
@@ -23,7 +23,7 @@ The Pages address is the configured publication location. Its deployed version d
 ## Contents
 
 1. [Problem and scope](#problem-and-scope)
-2. [What is new in v1.8](#what-is-new-in-v18)
+2. [What is new in v1.9](#what-is-new-in-v19)
 3. [Run on macOS](#run-on-macos)
 4. [Every page](#every-page)
 5. [A first demonstration](#a-first-demonstration)
@@ -50,17 +50,18 @@ A match means the proposed password value appears in the checked corpus. It does
 
 The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
 
-## What is new in v1.8
+## What is new in v1.9
 
-- Replaced the large offline-mode banner with a compact **Check source** selector: **Live HIBP** or **Practice · mock data**.
-- Source guidance reflects the current page: signup/reset, separately configured dashboard, or always-mocked Lab.
-- An optional **Demo guide** offers five selectable steps with concrete actions and expected explanations. It never runs checks automatically or marks steps as verified.
-- Privacy demonstration stays on signup so current evidence is not lost by navigating away. Practice instructions explicitly say no live evidence exists.
-- Readiness checks and challenge mapping are available on demand, not spread across every page.
-- Footer shows app version, policy and build identifier on phones and desktop. GitHub builds use the first 12 characters of `GITHUB_SHA`; ordinary local builds say `local`. This identifies a build, not a signature or security attestation.
-- Source switching retains cancellation, input/result clearing and fail-closed behavior. No automatic mock fallback was added.
+The Security Test Lab now teaches one scenario at a time instead of presenting nine dense result cards.
 
-See [v1.8 release notes](docs/releases/1.8.md) and [the changelog](CHANGELOG.md). v1.7's dashboard calculations and reporting improvements remain intact.
+- **Choose a situation:** nine compact scenario buttons retain their latest run status. Start with “Strong, but already exposed.”
+- **Run and understand:** the selected scenario explains the pretend response, expected decision and actual engine decision. Before running, the actual decision says “Not tested yet.”
+- **A useful verdict:** PASS explicitly means correct rejection or correct permission, with a scenario-specific explanation. It never means a password is guaranteed safe.
+- **Optional technical details:** strength, local policy, mock breach result, request-argument checks and service error codes are behind a disclosure.
+- **Preserved full suite:** run all nine, cancel, browse completed results and export evidence. Selecting another scenario does not change export scope; starting a new run replaces previous evidence.
+- **Correct export version:** Lab reports use the application version from package.json instead of the old hard-coded 1.5.0 value.
+
+The Lab always uses local mock responses. Existing HIBP checks, policy, dashboard reporting, source controls and light/dark themes are preserved. See [v1.9 release notes](docs/releases/1.9.md) and [the changelog](CHANGELOG.md).
 
 ## Run on macOS
 
@@ -97,7 +98,7 @@ npm run dev
 
 `npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-If using an update-only ZIP, follow [v1.8 update instructions](docs/UPGRADE-1.8-MACOS.md). An extracted ZIP is not a Git repository.
+If using an update-only ZIP, follow [v1.9 update instructions](docs/UPGRADE-1.9-MACOS.md). An extracted ZIP is not a Git repository.
 
 ### Preview a production build
 
@@ -116,7 +117,7 @@ The production files are written to `dist/`. Preview serves them locally. For th
 | Sign up `#signup` | Email context, password reveal, local rules, strength, explicit check, cancel, stage breakdown, current prefix evidence and simulated submission | `src/pages/AccountPage.jsx` |
 | Reset `#reset` | Same gate, optional email context and matching confirmation; invalid optional email must be corrected or cleared | `src/pages/AccountPage.jsx` |
 | Security dashboard `#dashboard` | Live/mock source, dataset size, run/cancel, formula, coverage, chart, filters, pagination, diagnostics, reports and comparison | `src/pages/Dashboard.jsx` |
-| Security Test Lab `#lab` | Run one or all nine controlled scenarios, inspect expected/observed decisions, cancel and export evidence | `src/pages/SecurityLab.jsx` |
+| Security Test Lab `#lab` | Choose one scenario with a plain-English explanation, inspect expected/actual decisions, run all nine, cancel and export evidence | `src/pages/SecurityLab.jsx` |
 | How it works `#architecture` | Browser/API flow, prefix/suffix split and decision architecture | `src/pages/HowItWorks.jsx` |
 | Privacy & proof `#privacy` | Independent DevTools instructions, data boundaries and up to 50 in-memory activity events | `src/pages/Privacy.jsx` |
 | Password policy `#policy` | Implemented rules, NIST alignment statement and production limitations | `src/pages/Policy.jsx` |
@@ -317,7 +318,7 @@ The browser test server uses port 4173 with strict port checking. Stop any other
 
 Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
 
-The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.8.md) for tests actually executed.
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.9.md) for tests actually executed.
 
 ## GitHub and deployment
 
@@ -331,7 +332,7 @@ In a real clone, with a clean working tree:
 git status
 git switch main
 git pull --ff-only
-git switch -c upgrade-hello-world-v1.8
+git switch -c upgrade-hello-world-v1.9
 ```
 
 Apply the intended update, validate locally, and inspect before committing:
@@ -340,8 +341,8 @@ Apply the intended update, validate locally, and inspect before committing:
 git diff --stat
 git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
 git diff --cached --stat
-git commit -m "Make the HELLO WORLD v1.8 demo guide usable"
-git push -u origin upgrade-hello-world-v1.8
+git commit -m "Simplify the HELLO WORLD v1.9 Security Test Lab"
+git push -u origin upgrade-hello-world-v1.9
 ```
 
 If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.

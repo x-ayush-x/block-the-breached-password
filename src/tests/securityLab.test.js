@@ -1,3 +1,4 @@
+import packageInfo from '../../package.json' with { type: 'json' };
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { LAB_SCENARIOS, runLabScenario, runSecurityLab, labReport, requestContract } from '../services/securityLab.js';
@@ -18,6 +19,7 @@ test('lab completes without accessing global fetch and exports only evidence fie
     assert.ok(rows.every(row => row.passed));
     const report = labReport(rows.map(row => ({ ...row, password: 'SECRET', suffix: 'SECRET', fullHash: 'SECRET', email: 'SECRET', prefix: 'SECRET' })), 'complete');
     assert.equal(report.completed, 9);
+    assert.equal(report.version, packageInfo.version);
     assert.equal(report.passed, 9);
     assert.equal(JSON.stringify(report).includes('SECRET'), false);
     assert.ok(report.source.includes('NOT LIVE HIBP'));

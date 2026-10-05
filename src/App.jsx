@@ -10,7 +10,7 @@ const Privacy = lazy(() => import("./pages/Privacy.jsx"));
 const SecurityLab = lazy(() => import("./pages/SecurityLab.jsx"));
 const Policy = lazy(() => import("./pages/Policy.jsx"));
 
-import { version } from "../package.json";
+import { APP_VERSION } from "./config/appVersion.js";
 import { POLICY } from "./utils/passwordPolicy.js";
 import ThemeControl from "./components/ThemeControl.jsx";
 import DemoGuide from "./components/DemoGuide.jsx";
@@ -99,7 +99,7 @@ export default function App() {
           </span>
           <span>Client-side prototype · Authentication simulated</span>
           <a href="#privacy">Privacy & limitations</a>
-          <span className="release-info">v{version} · Policy {POLICY.version} · Build {import.meta.env.APP_BUILD_ID}</span>
+          <span className="release-info">v{APP_VERSION} · Policy {POLICY.version} · Build {import.meta.env.APP_BUILD_ID}</span>
         </footer>
       </div>
     </div>

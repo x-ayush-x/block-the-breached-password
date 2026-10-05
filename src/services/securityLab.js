@@ -1,3 +1,4 @@
+import { APP_VERSION } from '../config/appVersion.js';
 import { sha1, splitHash } from '../utils/hashing.js';
 import { validatePassword, securityDecision } from '../utils/passwordPolicy.js';
 import { evaluateStrength } from '../utils/passwordStrength.js';
@@ -102,7 +103,7 @@ export async function runSecurityLab({ signal, onResult } = {}) {
 
 export function labReport(results, phase, selected = null) {
   const scenarioIds = selected && LAB_SCENARIOS.some(item => item.id === selected) ? [selected] : LAB_SCENARIOS.map(item => item.id);
-  return { project: 'HELLO WORLD', version: '1.5.0', generatedAt: new Date().toISOString(),
+  return { project: 'HELLO WORLD', version: APP_VERSION, generatedAt: new Date().toISOString(),
     source: 'LOCAL SYNTHETIC TESTS — NOT LIVE HIBP', phase,
     scope: 'Shared hashing, request construction, response parsing, strength and policy functions. No external requests. Not a production security certification or browser network capture.',
     totalScenarios: scenarioIds.length, scenarioIds, completed: results.length, passed: results.filter(row => row.passed).length,
