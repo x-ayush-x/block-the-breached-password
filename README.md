@@ -8,7 +8,7 @@ HELLO WORLD is our hackathon team and application name. The repository remains `
 
 | Project status | Current implementation |
 | --- | --- |
-| Application version | **1.10.0** |
+| Application version | **1.11.0** |
 | Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
 | Authentication | Simulated; no real accounts, login sessions or reset emails |
 | Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
@@ -23,7 +23,7 @@ The Pages address is the configured publication location. Its deployed version d
 ## Contents
 
 1. [Problem and scope](#problem-and-scope)
-2. [What is new in v1.10](#what-is-new-in-v110)
+2. [What is new in v1.11](#what-is-new-in-v111)
 3. [Run on macOS](#run-on-macos)
 4. [Every page](#every-page)
 5. [A first demonstration](#a-first-demonstration)
@@ -50,18 +50,18 @@ A match means the proposed password value appears in the checked corpus. It does
 
 The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
 
-## What is new in v1.10
+## What is new in v1.11
 
-Signup and reset now explain the whole form through one **What is needed to continue?** checklist.
+Dashboard report comparison now shows what is inside each file and why a comparison is allowed or blocked.
 
-- Length, local common/account-related values, breach result, email context and reset confirmation have explicit Met / Needs attention / Pending states.
-- **What to do next** explains the next action. A successful password check no longer implies the whole form is ready while email or confirmation still blocks it.
-- Strength remains advisory and is explicitly labelled as such. It cannot override a breach match.
-- Real processing stages remain available through **See actual processing stages**. The disclosure replaces the duplicated rule and decision lists; it never invents progress.
-- The submission button is associated with its guidance for assistive technology.
-- Live and mock results stay distinct. Explicit checks, cancellation, expiry and submit-time freshness safeguards are preserved.
+- Side-by-side summaries show mock/live source, timestamp, dataset identity, policy, scenario, run status, coverage and match rate.
+- A five-part compatibility checklist exposes every mismatch: source, dataset/size, policy, scenario and full successful coverage.
+- Reading, empty, invalid and loaded states are explicit. Remove clears the selected file and invalidates any pending read; older reads cannot restore it.
+- Help explains JSON versus PDF, repeated mock datasets, fresh live datasets, and percentage points. Files remain local and self-reported, not authenticated evidence.
+- Dashboard JSON and printable reports now include the application version. Policy and dashboard schema stay unchanged.
+- Import validation rejects empty policy/dataset identities and unexpected live-scenario metadata; absent legacy live scenarios normalize to null.
 
-The focused Lab from v1.9, dashboard reports and demonstration controls remain available. See [v1.10 release notes](docs/releases/1.10.md) and [the changelog](CHANGELOG.md).
+Existing signup/reset, Lab, mock/live separation and security controls remain intact. See [v1.11 release notes](docs/releases/1.11.md) and [the changelog](CHANGELOG.md).
 
 ## Run on macOS
 
@@ -98,7 +98,7 @@ npm run dev
 
 `npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-If using an update-only ZIP, follow [v1.10 update instructions](docs/UPGRADE-1.10-MACOS.md). An extracted ZIP is not a Git repository.
+If using an update-only ZIP, follow [v1.11 update instructions](docs/UPGRADE-1.11-MACOS.md). An extracted ZIP is not a Git repository.
 
 ### Preview a production build
 
@@ -233,6 +233,8 @@ JSON reports include source/mode, dataset identity, policy version, scenario, ph
 
 **Print / Save as PDF** prints the dashboard's aggregate security report. Choose Save as PDF in the browser's print dialog. Navigation and paginated table content are excluded; the report covers all results, regardless of the current filter. Partial reports remain explicitly incomplete.
 
+Comparison presents two source-labelled summaries and a five-part compatibility checklist. Remove clears one file and invalidates any pending read. Loading a replacement immediately removes the old comparison. All processing stays in the browser.
+
 Comparison accepts supported v1.4-or-newer dashboard JSON exports, at most 1 MB per file. It validates count consistency and retains only allowlisted metadata; imported account rows are not rendered. Both reports must have the same source, dataset/size, policy and scenario, with complete successful coverage. Separate live runs get new dataset IDs, so they cannot be compared as if they were the same population. Output is a difference in **percentage points**, not proof of security improvement. Files are self-reported and unauthenticated. No upload occurs.
 
 ## Privacy and security boundaries
@@ -318,7 +320,7 @@ The browser test server uses port 4173 with strict port checking. Stop any other
 
 Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
 
-The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.10.md) for tests actually executed.
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.11.md) for tests actually executed.
 
 ## GitHub and deployment
 
@@ -332,7 +334,7 @@ In a real clone, with a clean working tree:
 git status
 git switch main
 git pull --ff-only
-git switch -c upgrade-hello-world-v1.10
+git switch -c upgrade-hello-world-v1.11
 ```
 
 Apply the intended update, validate locally, and inspect before committing:
@@ -341,8 +343,8 @@ Apply the intended update, validate locally, and inspect before committing:
 git diff --stat
 git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
 git diff --cached --stat
-git commit -m "Clarify HELLO WORLD v1.10 signup and reset decisions"
-git push -u origin upgrade-hello-world-v1.10
+git commit -m "Explain HELLO WORLD v1.11 report comparisons"
+git push -u origin upgrade-hello-world-v1.11
 ```
 
 If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.

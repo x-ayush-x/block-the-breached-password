@@ -1,3 +1,4 @@
+import { APP_VERSION } from "../config/appVersion.js";
 import { demoComposition } from "../data/demoAccounts.js";
 import ReportComparison from "../components/ReportComparison.jsx";
 import { POLICY } from "../utils/passwordPolicy.js";
@@ -103,6 +104,7 @@ export default function Dashboard({ onAudit, offline = false }) {
   function exportReport() {
     downloadReport({
       schema: REPORT_SCHEMA,
+      version: APP_VERSION,
       policyVersion: POLICY.version,
       datasetId: datasetId.current,
       coverage: `${summary.tested}/${summary.total}`,
@@ -467,7 +469,7 @@ export default function Dashboard({ onAudit, offline = false }) {
       </details>
       <section className="panel printable-report" aria-label="Printable security report">
         <h2>3. Keep your report</h2>
-        <p><strong>HELLO WORLD · Security report</strong></p>
+        <p><strong>HELLO WORLD · Security report · v{APP_VERSION}</strong></p>
         <p><strong>{mockMode ? "MOCK — LOCAL SYNTHETIC CORPUS" : "LIVE HIBP Pwned Passwords API"}</strong></p>
         <p>Policy: {POLICY.version} · Dataset: {datasetId.current ?? "Not run"} · Scenario: {mockMode ? scenario : "live"}</p>
         <p>Synthetic inputs: {composition.common} repeated common examples + {composition.random} {mockMode ? "other fixed synthetic values" : "fresh random values"}. No employee accounts.</p>
@@ -479,6 +481,8 @@ export default function Dashboard({ onAudit, offline = false }) {
         <p>Reject matched passwords. Retry unknown and pending checks; keep submission blocked. For no-match results, apply length and common/account-related rules. Strength is advisory. No match does not guarantee safety.</p>
         <p>Demonstration accounts only. Authentication is simulated. Passwords and hashes are excluded. {mockMode && "Mock findings do not measure real breach exposure."}</p>
         <button className="button secondary no-print" disabled={!finishedAt || running} onClick={() => window.print()}>Print / Save as PDF</button>
+        {!finishedAt && <p className="no-print">Run an analysis first to create a report. Unknown or pending inputs will remain explicitly incomplete.</p>}
+        <p className="no-print">Export report downloads JSON for this comparison tool. Print / Save as PDF creates a readable document; PDFs cannot be imported for comparison.</p>
         <p className="no-print">In the print dialog, choose Save as PDF. The report includes all aggregate results, regardless of table filters or pagination.</p>
       </section>
       <ReportComparison />

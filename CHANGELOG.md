@@ -2,6 +2,28 @@
 
 Changes are recorded newest first. Application versions and password-policy versions are separate. Historical entries below were reconstructed from the existing source, upgrade guides and validation notes; unknown dates and test results are not invented. A local release does not mean GitHub Pages has deployed it.
 
+## 1.11.0 — 2026-10-05
+
+### Added
+- Side-by-side report metadata and coverage summaries.
+- Five compatibility checks with plain-English explanations of every mismatch.
+- File-reading states, per-file removal and comparison help with percentage-point examples.
+- Application version in dashboard JSON and printable reports.
+- Regression coverage for multiple blockers, invalid replacements, partial results, mobile layout and late reads after removal.
+
+### Changed / fixed
+- Comparison shows the evidence for compatibility before presenting a numerical difference.
+- Import validation rejects blank identities/policies and invalid live-scenario metadata; normalizes legacy absent live scenarios.
+- Clearing/unmounting invalidates pending reads. Imported account rows and unknown fields remain discarded.
+- README, release notes, migration instructions and version labels updated.
+
+### Removed
+- None. Existing report export, print and comparison capabilities retained.
+
+### Security and validation
+- No new requests, credential storage, dependencies or automatic mock fallback. Policy/schema and Pages configuration unchanged.
+- [Executed checks and limits](docs/releases/1.11.md). Published to a release branch for review; no merge or deployment by this update.
+
 ## 1.10.0 — 2026-10-05
 
 ### Added
