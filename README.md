@@ -8,7 +8,7 @@ HELLO WORLD is our hackathon team and application name. The repository remains `
 
 | Project status | Current implementation |
 | --- | --- |
-| Application version | **1.11.0** |
+| Application version | **1.12.0** |
 | Password-policy version | `hello-world-1.5` — rules unchanged in v1.6/v1.7 |
 | Authentication | Simulated; no real accounts, login sessions or reset emails |
 | Breach checking | Browser-only HIBP range lookup; only five hash-prefix characters sent |
@@ -23,7 +23,7 @@ The Pages address is the configured publication location. Its deployed version d
 ## Contents
 
 1. [Problem and scope](#problem-and-scope)
-2. [What is new in v1.11](#what-is-new-in-v111)
+2. [What is new in v1.12](#what-is-new-in-v112)
 3. [Run on macOS](#run-on-macos)
 4. [Every page](#every-page)
 5. [A first demonstration](#a-first-demonstration)
@@ -50,18 +50,18 @@ A match means the proposed password value appears in the checked corpus. It does
 
 The application's contribution is the integrated UI, policy gate, request lifecycle, failure handling, privacy evidence, reporting, educational Lab, accessibility work and regression tests. HIBP supplies the breach corpus and range API; zxcvbn supplies the strength estimator; browser Web Crypto supplies hashing. We do not claim to have invented those techniques.
 
-## What is new in v1.11
+## What is new in v1.12
 
-Dashboard report comparison now shows what is inside each file and why a comparison is allowed or blocked.
+The hackathon walkthrough can now stay useful while you demonstrate the application.
 
-- Side-by-side summaries show mock/live source, timestamp, dataset identity, policy, scenario, run status, coverage and match rate.
-- A five-part compatibility checklist exposes every mismatch: source, dataset/size, policy, scenario and full successful coverage.
-- Reading, empty, invalid and loaded states are explicit. Remove clears the selected file and invalidates any pending read; older reads cannot restore it.
-- Help explains JSON versus PDF, repeated mock datasets, fresh live datasets, and percentage points. Files remain local and self-reported, not authenticated evidence.
-- Dashboard JSON and printable reports now include the application version. Policy and dashboard schema stay unchanged.
-- Import validation rejects empty policy/dataset identities and unexpected live-scenario metadata; absent legacy live scenarios normalize to null.
+- Open **Demo guide → Use compact presentation cues** for an optional current-step panel. Previous/Next cue changes the selected step; page links navigate only when you activate them.
+- Cues persist between routes in memory and reset on reload. End presentation removes them without clearing current form inputs.
+- Talking points and evidence limits expand on demand. Live/mock status remains explicit, with separate dashboard source and mock-only Lab explanations.
+- Starting cues moves keyboard focus to their heading. A same-page link moves focus to the page heading without remounting the form or discarding its result.
+- Browser readiness includes a timestamp and a reminder to recheck. It remains a local snapshot, not a HIBP availability check.
+- The [two-minute script](docs/DEMO-2-MINUTES.md) now includes conditional wording for live matches, mock results and outages.
 
-Existing signup/reset, Lab, mock/live separation and security controls remain intact. See [v1.11 release notes](docs/releases/1.11.md) and [the changelog](CHANGELOG.md).
+Nothing runs automatically and selecting a guide step is not test evidence. Existing password checks, reporting and source-switch cancellation remain intact. See [v1.12 release notes](docs/releases/1.12.md) and [the changelog](CHANGELOG.md).
 
 ## Run on macOS
 
@@ -98,7 +98,7 @@ npm run dev
 
 `npm ci` installs the versions in `package-lock.json` and replaces any existing `node_modules`. No HIBP API key is needed. Open the localhost URL printed by Vite and leave Terminal running. Control+C stops the server. Do not open `index.html` directly using a `file://` URL.
 
-If using an update-only ZIP, follow [v1.11 update instructions](docs/UPGRADE-1.11-MACOS.md). An extracted ZIP is not a Git repository.
+If using an update-only ZIP, follow [v1.12 update instructions](docs/UPGRADE-1.12-MACOS.md). An extracted ZIP is not a Git repository.
 
 ### Preview a production build
 
@@ -320,7 +320,7 @@ The browser test server uses port 4173 with strict port checking. Stop any other
 
 Tests use controlled mock HIBP responses, not repeated real-service calls. They cover privacy contracts, malformed responses, fail-closed behavior, stale/expired checks, cancellation, reports, Lab scenarios, mobile navigation and layouts. Traces/videos/screenshots are off by default; opt-in screenshots use public demonstration data. Test success is not proof of current HIBP availability or complete security.
 
-The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.11.md) for tests actually executed.
+The deferred zxcvbn dictionary still triggers Vite's large-chunk advisory. That advisory is not a failed build. Initial home loading does not request the strength bundle. Consult [release validation](docs/releases/1.12.md) for tests actually executed.
 
 ## GitHub and deployment
 
@@ -334,7 +334,7 @@ In a real clone, with a clean working tree:
 git status
 git switch main
 git pull --ff-only
-git switch -c upgrade-hello-world-v1.11
+git switch -c upgrade-hello-world-v1.12
 ```
 
 Apply the intended update, validate locally, and inspect before committing:
@@ -343,8 +343,8 @@ Apply the intended update, validate locally, and inspect before committing:
 git diff --stat
 git add README.md CHANGELOG.md docs src e2e package.json package-lock.json
 git diff --cached --stat
-git commit -m "Explain HELLO WORLD v1.11 report comparisons"
-git push -u origin upgrade-hello-world-v1.11
+git commit -m "Improve HELLO WORLD v1.12 hackathon presentation flow"
+git push -u origin upgrade-hello-world-v1.12
 ```
 
 If the update includes workflow changes, review/stage those explicitly too. Do not overwrite unrelated work, commit secrets, force-push or merge just to silence a test. Open a PR and wait for validation. Merging it triggers deployment.

@@ -4,6 +4,7 @@ Use [README.md](../../README.md) for current behavior and [CHANGELOG.md](../../C
 
 ## Current detailed notes
 
+- [1.12](1.12.md): presentation cues and keyboard navigation.
 - [1.11](1.11.md): understandable report comparison and file lifecycle.
 - [1.10](1.10.md): clear signup/reset requirements and next actions.
 - [1.9](1.9.md): focused Security Test Lab and clear result explanations.
