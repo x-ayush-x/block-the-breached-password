@@ -52,7 +52,7 @@ export default function SecurityLab() {
     }
   }
   return <>
-    <PageHeading eyebrow="SECURITY TEST LAB · V1.10" title="Would our checker make the right decision?" description="Choose a situation. Run a controlled test. See why the password gate allows or blocks it.">
+    <PageHeading eyebrow="SECURITY TEST LAB · V1.11" title="Would our checker make the right decision?" description="Choose a situation. Run a controlled test. See why the password gate allows or blocks it.">
       <button className="button secondary" disabled={!results.length || running} onClick={() => downloadReport(labReport(results, phase, selected), 'security-lab-evidence.json')}><Icon name="download" size={17} /> Export evidence</button>
     </PageHeading>
     <div className="dataset-banner"><Icon name="info" size={20} /><p><strong>Always a simulation. No live HIBP requests.</strong> Real checking functions run against public test inputs and pretend service responses. No employee passwords or real accounts are used.</p></div>
