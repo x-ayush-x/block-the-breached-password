@@ -17,7 +17,7 @@ test('scenario browsing preserves evidence and export scope until a new run', as
   const stream = await (await download).createReadStream();
   let body = ''; for await (const part of stream) body += part;
   const report = JSON.parse(body);
-  expect(report.version).toBe('1.11.0');
+  expect(report.version).toBe('1.12.0');
   expect(report.scenarioIds).toEqual(['strong-breached']);
   expect(report.results.map(row => row.id)).toEqual(['strong-breached']);
   await picker.getByRole('button', { name: /Strong, but already exposed/ }).click();

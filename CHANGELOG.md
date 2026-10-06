@@ -2,6 +2,27 @@
 
 Changes are recorded newest first. Application versions and password-policy versions are separate. Historical entries below were reconstructed from the existing source, upgrade guides and validation notes; unknown dates and test results are not invented. A local release does not mean GitHub Pages has deployed it.
 
+## 1.12.0 — 2026-10-06
+
+### Added
+- Optional compact presentation cues with manual Previous/Next, page links, talking points and End presentation.
+- Keyboard focus on cue activation and same-page navigation without clearing inputs.
+- Timestamped browser-readiness snapshots.
+- Browser tests for focus, route persistence, source labels, reload reset, storage and phone layouts.
+
+### Changed / fixed
+- Demo script now follows actual outcomes for live, mock and failed checks and includes a short Lab explanation.
+- Clarified Lab walkthrough instructions and source/evidence limits.
+- README, version labels, release notes and migration instructions updated.
+
+### Removed
+- None. Existing guide and readiness controls remain available.
+
+### Security and validation
+- Cues do not execute or verify checks. Session memory only; no persistence, requests, analytics or new dependencies.
+- Policy, security services and Pages configuration unchanged. [Validation and limitations](docs/releases/1.12.md).
+- Published to a release branch for review; no merge or deployment by this update.
+
 ## 1.11.0 — 2026-10-05
 
 ### Added

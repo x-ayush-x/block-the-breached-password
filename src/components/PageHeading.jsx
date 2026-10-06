@@ -3,7 +3,7 @@ export default function PageHeading({ eyebrow, title, description, children }) {
     <div className="page-heading">
       <div>
         <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
+        <h1 tabIndex={-1}>{title}</h1>
         <p className="page-description">{description}</p>
       </div>
       {children}
